@@ -1,0 +1,6 @@
+name = "materias"
+compatibility_date = "2025-08-15"
+
+[site]
+bucket = "./"
+entry-point = "./"
