@@ -1,6 +1,0 @@
-name = "materias"
-compatibility_date = "2025-08-15"
-main = "./index.html"
-
-[site]
-bucket = "./"
