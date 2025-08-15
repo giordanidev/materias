@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
         }
     </script>
 </head>
+
 <body class="min-h-screen bg-zinc-100 dark:bg-zinc-900 transition-colors duration-500 flex flex-col">
     <div class="fixed top-0 right-0 p-4" id="alerta-container"></div>
     <div class="container mx-auto p-4 flex-grow">
@@ -19,46 +21,59 @@
                 <h1 class="text-2xl sm:text-3xl font-bold text-zinc-600 dark:text-zinc-100">Gerenciador de Matérias</h1>
                 <p class="text-sm text-zinc-500 dark:text-zinc-400">Clique em uma matéria para copiá-la</p>
             </div>
-            <button onclick="toggleDarkMode()" class="bg-zinc-200 hover:bg-zinc-300 text-zinc-600 font-bold py-2 px-4 rounded dark:bg-zinc-700 dark:hover:bg-zinc-800 dark:text-zinc-100 text-sm sm:text-base transition-transform active:scale-95">
+            <button onclick="toggleDarkMode()"
+                class="bg-zinc-200 hover:bg-zinc-300 text-zinc-600 font-bold py-2 px-4 rounded dark:bg-zinc-700 dark:hover:bg-zinc-800 dark:text-zinc-100 text-sm sm:text-base transition-transform active:scale-95">
                 <span class="light-text">Modo Escuro</span>
                 <span class="dark-text hidden">Modo Claro</span>
             </button>
         </div>
-        
+
         <div class="mb-4">
-            <input type="text" id="pesquisa" placeholder="Pesquisar matérias..." class="w-full p-2 text-sm bg-zinc-100 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 rounded-lg focus:ring-zinc-500 focus:border-zinc-500">
+            <input type="text" id="pesquisa" placeholder="Pesquisar matérias..."
+                class="w-full p-2 text-sm bg-zinc-100 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 rounded-lg focus:ring-zinc-500 focus:border-zinc-500">
         </div>
-        
+
         <div class="flex flex-col sm:flex-row gap-2 mb-4">
-            <input type="text" id="nova-mensagem" placeholder="Digite uma nova matéria" class="flex-grow p-2 text-sm bg-zinc-100 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 rounded-lg focus:ring-zinc-500 focus:border-zinc-500">
-            <button onclick="adicionarMensagem()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm sm:text-base transition-transform active:scale-95">Adicionar</button>
+            <input type="text" id="nova-mensagem" placeholder="Digite uma nova matéria"
+                class="flex-grow p-2 text-sm bg-zinc-100 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 rounded-lg focus:ring-zinc-500 focus:border-zinc-500">
+            <button onclick="adicionarMensagem()"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm sm:text-base transition-transform active:scale-95">Adicionar</button>
         </div>
-        
+
         <div class="flex flex-col sm:flex-row gap-2 mb-4 justify-between items-start sm:items-center">
             <!-- Botão para copiar "Informações do trânsito" -->
             <div class="w-full sm:w-auto">
-                <button onclick="copiarTextoFixo()" class="w-full sm:w-auto py-1 px-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg shadow cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-all active:scale-95 active:bg-zinc-400 dark:active:bg-zinc-500">
+                <button onclick="copiarTextoDoBotao(this)"
+                    class="w-full sm:w-auto py-1 px-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg shadow cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-all active:scale-95 active:bg-zinc-400 dark:active:bg-zinc-500">
                     <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100">Informações do trânsito</span>
                 </button>
             </div>
-            
+
             <!-- Controles de data e apagar (movidos para a direita) -->
             <div class="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
-                <select id="selecionar-data" class="p-2 text-sm bg-zinc-100 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 rounded-lg focus:ring-zinc-500 focus:border-zinc-500">
+                <select id="selecionar-data"
+                    class="p-2 text-sm bg-zinc-100 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 rounded-lg focus:ring-zinc-500 focus:border-zinc-500">
                     <option value="">Todas as datas</option>
                 </select>
-                <button onclick="apagarMensagensDoDia()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm sm:text-base transition-transform active:scale-95">Apagar do Dia</button>
-                <button onclick="apagarTodasMensagens()" class="bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded text-sm sm:text-base transition-transform active:scale-95">Apagar Todas</button>
+                <button onclick="apagarMensagensDoDia()"
+                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm sm:text-base transition-transform active:scale-95">Apagar
+                    do Dia</button>
+                <button onclick="apagarTodasMensagens()"
+                    class="bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded text-sm sm:text-base transition-transform active:scale-95">Apagar
+                    Todas</button>
             </div>
         </div>
-        
+
         <div id="mensagens" class="space-y-2"></div>
     </div>
 
     <footer class="bg-zinc-200 dark:bg-zinc-800 py-3 px-4 border-t border-zinc-300 dark:border-zinc-700">
-        <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center text-sm text-zinc-600 dark:text-zinc-400">
+        <div
+            class="container mx-auto flex flex-col sm:flex-row justify-between items-center text-sm text-zinc-600 dark:text-zinc-400">
             <div class="mb-2 sm:mb-0">&reg; Todos os direitos reservados.</div>
-            <div>Desenvolvido por: <a href="https://giordani.dev" target="_blank" class="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">Giordani.dev</a></div>
+            <div>Desenvolvido por: <a href="https://giordani.dev" target="_blank"
+                    class="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">Giordani.dev</a>
+            </div>
         </div>
     </footer>
 
@@ -92,53 +107,28 @@
 
         // Event listeners
         document.getElementById('pesquisa').addEventListener('input', filtrarMensagens);
-        document.getElementById('nova-mensagem').addEventListener('keypress', function(event) {
+        document.getElementById('nova-mensagem').addEventListener('keypress', function (event) {
             if (event.key === 'Enter') {
                 adicionarMensagem();
             }
         });
-        document.getElementById('selecionar-data').addEventListener('change', function() {
+        document.getElementById('selecionar-data').addEventListener('change', function () {
             exibirMensagens();
         });
-
-        // Função para copiar o texto fixo
-        function copiarTextoFixo() {
-            const texto = "Informações do trânsito";
-            // Criar um elemento textarea temporário
-            const textarea = document.createElement('textarea');
-            textarea.value = texto;
-            textarea.style.position = 'fixed';
-            document.body.appendChild(textarea);
-            textarea.select();
-            
-            try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    mostrarAlerta('Texto copiado para a área de transferência!');
-                } else {
-                    mostrarAlerta('Não foi possível copiar o texto', 'bg-yellow-500');
-                }
-            } catch (err) {
-                mostrarAlerta('Erro ao copiar texto', 'bg-red-500');
-                console.error('Erro ao copiar:', err);
-            }
-            
-            document.body.removeChild(textarea);
-        }
 
         // Atualizar seletor de datas
         function atualizarSeletorDatas() {
             const seletor = document.getElementById('selecionar-data');
             const datasExistentes = new Set();
-            
+
             // Manter a opção "Todas as datas"
             seletor.innerHTML = '<option value="">Todas as datas</option>';
-            
+
             // Coletar datas únicas
             mensagens.forEach(msg => {
                 datasExistentes.add(msg.data);
             });
-            
+
             // Adicionar opções de data (ordenadas da mais recente para a mais antiga)
             Array.from(datasExistentes).sort().reverse().forEach(data => {
                 const option = document.createElement('option');
@@ -166,7 +156,7 @@
         // Função para filtrar mensagens conforme o texto da pesquisa
         function filtrarMensagens() {
             const termoPesquisa = document.getElementById('pesquisa').value.toLowerCase();
-            const mensagensFiltradas = mensagens.filter(msg => 
+            const mensagensFiltradas = mensagens.filter(msg =>
                 msg.texto.toLowerCase().includes(termoPesquisa)
             );
             exibirMensagens(mensagensFiltradas);
@@ -176,28 +166,28 @@
             const input = document.getElementById('nova-mensagem');
             // Remove espaços extras no começo e fim e espaços múltiplos entre palavras
             const texto = input.value.trim().replace(/\s+/g, ' ');
-            
+
             if (texto) {
                 const dataAtual = obterDataAtual();
-                
+
                 // Verifica se a mensagem já existe (ignorando espaços extras)
-                const mensagemJaExiste = mensagens.some(m => 
+                const mensagemJaExiste = mensagens.some(m =>
                     m.texto.trim() === texto && m.data === dataAtual
                 );
-                
+
                 if (mensagemJaExiste) {
                     mostrarAlerta('Esta matéria já está cadastrada para hoje!', 'bg-yellow-500');
                     input.value = ''; // Limpa o input quando a mensagem já existe
                     return;
                 }
-                
+
                 // Adiciona a nova mensagem no INÍCIO do array (para aparecer no topo)
                 mensagens.unshift({
                     texto: texto,
                     data: dataAtual,
                     timestamp: new Date().getTime() // Adiciona timestamp para ordenação dentro do mesmo dia
                 });
-                
+
                 input.value = '';
                 salvarMensagens();
                 atualizarSeletorDatas();
@@ -205,22 +195,22 @@
                 mostrarAlerta('Matéria salva com sucesso!');
                 document.getElementById('pesquisa').value = '';
 
-                copiarMensagem(texto);
+                copiarMensagem(texto, 300);
             }
         }
 
         function exibirMensagens(mensagensParaExibir = null) {
             const divMensagens = document.getElementById('mensagens');
             divMensagens.innerHTML = '';
-            
+
             let mensagensExibidas = mensagensParaExibir || mensagens;
             const dataSelecionada = document.getElementById('selecionar-data').value;
-            
+
             // Filtrar por data se alguma estiver selecionada
             if (dataSelecionada) {
                 mensagensExibidas = mensagensExibidas.filter(msg => msg.data === dataSelecionada);
             }
-            
+
             // Agrupar por data
             const mensagensPorData = {};
             mensagensExibidas.forEach(msg => {
@@ -229,7 +219,7 @@
                 }
                 mensagensPorData[msg.data].push(msg);
             });
-            
+
             // Exibir mensagens agrupadas por data
             if (Object.keys(mensagensPorData).length === 0) {
                 const mensagem = document.createElement('div');
@@ -238,10 +228,10 @@
                 divMensagens.appendChild(mensagem);
                 return;
             }
-            
+
             // Ordenar datas da mais recente para a mais antiga
             const datasOrdenadas = Object.keys(mensagensPorData).sort().reverse();
-            
+
             datasOrdenadas.forEach(data => {
                 // Cabeçalho com a data
                 const cabecalhoData = document.createElement('div');
@@ -250,29 +240,29 @@
                     <h2 class="text-lg font-semibold text-zinc-600 dark:text-zinc-300">${formatarDataParaExibicao(data)}</h2>
                 `;
                 divMensagens.appendChild(cabecalhoData);
-                
+
                 // Ordenar mensagens do dia pela timestamp (mais recente primeiro)
                 const mensagensDoDia = mensagensPorData[data].sort((a, b) => b.timestamp - a.timestamp);
-                
+
                 // Mensagens do dia (já ordenadas)
                 mensagensDoDia.forEach((msg, index) => {
                     const container = document.createElement('div');
                     container.className = 'flex items-center gap-2';
-                    
+
                     const divMensagem = document.createElement('div');
                     divMensagem.className = 'flex-grow py-1 px-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg shadow cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-all active:scale-95 active:bg-zinc-400 dark:active:bg-zinc-500';
                     divMensagem.innerHTML = `
                         <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100 break-words">${msg.texto}</span>
                     `;
                     // Adiciona o evento de clique para copiar
-                    divMensagem.addEventListener('click', function() {
+                    divMensagem.addEventListener('click', function () {
                         this.classList.add('bg-green-100', 'dark:bg-green-900');
                         copiarMensagem(msg.texto);
                         setTimeout(() => {
                             this.classList.remove('bg-green-100', 'dark:bg-green-900');
                         }, 300);
                     });
-                    
+
                     const divBotoes = document.createElement('div');
                     divBotoes.className = 'flex gap-2';
                     divBotoes.innerHTML = `
@@ -280,7 +270,7 @@
                             Apagar
                         </button>
                     `;
-                    
+
                     container.appendChild(divMensagem);
                     container.appendChild(divBotoes);
                     divMensagens.appendChild(container);
@@ -288,27 +278,40 @@
             });
         }
 
-        function copiarMensagem(texto) {
+        function copiarTextoDoBotao(botao) {
+            // Encontra o elemento span dentro do botão
+            const span = botao.querySelector('span');
+            if (span) {
+                // Usa a função existente para copiar o texto
+                copiarMensagem(span.textContent);
+            }
+        }
+
+        function copiarMensagem(texto, delay = 0) {
             // Criar um elemento textarea temporário
             const textarea = document.createElement('textarea');
             textarea.value = texto;
-            textarea.style.position = 'fixed';  // Evitar rolagem para o elemento
+            textarea.style.position = 'fixed';
             document.body.appendChild(textarea);
             textarea.select();
-            
+
             try {
                 // Executar o comando de cópia
                 const successful = document.execCommand('copy');
-                if (successful) {
-                    mostrarAlerta('Matéria copiada para a área de transferência!');
-                } else {
-                    mostrarAlerta('Não foi possível copiar a matéria', 'bg-yellow-500');
-                }
+                setTimeout(() => {
+                    if (successful) {
+                        mostrarAlerta('Matéria copiada para a área de transferência!');
+                    } else {
+                        mostrarAlerta('Não foi possível copiar a matéria', 'bg-yellow-500');
+                    }
+                }, delay);
             } catch (err) {
-                mostrarAlerta('Erro ao copiar matéria', 'bg-red-500');
+                setTimeout(() => {
+                    mostrarAlerta('Erro ao copiar matéria', 'bg-red-500');
+                }, delay);
                 console.error('Erro ao copiar:', err);
             }
-            
+
             // Remover o textarea
             document.body.removeChild(textarea);
         }
@@ -316,14 +319,14 @@
         function apagarMensagem(data, index) {
             // Encontrar índice global da mensagem
             const mensagensDoDia = mensagens.filter(msg => msg.data === data)
-                                           .sort((a, b) => b.timestamp - a.timestamp);
+                .sort((a, b) => b.timestamp - a.timestamp);
             const mensagemParaApagar = mensagensDoDia[index];
-            const indiceGlobal = mensagens.findIndex(msg => 
-                msg.texto === mensagemParaApagar.texto && 
+            const indiceGlobal = mensagens.findIndex(msg =>
+                msg.texto === mensagemParaApagar.texto &&
                 msg.data === mensagemParaApagar.data &&
                 msg.timestamp === mensagemParaApagar.timestamp
             );
-            
+
             if (indiceGlobal !== -1) {
                 mensagens.splice(indiceGlobal, 1);
                 salvarMensagens();
@@ -336,7 +339,7 @@
             const dataSelecionada = document.getElementById('selecionar-data').value;
             const dataAtual = obterDataAtual();
             const dataParaApagar = dataSelecionada || dataAtual;
-            
+
             if (confirm(`Tem certeza que deseja apagar todas as matérias do dia ${formatarDataParaExibicao(dataParaApagar)}?`)) {
                 mensagens = mensagens.filter(msg => msg.data !== dataParaApagar);
                 salvarMensagens();
@@ -372,19 +375,19 @@
             const alerta = document.createElement('div');
             alerta.className = `${bgColor} text-white p-3 rounded-lg shadow text-sm sm:text-base mb-1 opacity-0 animate-fade-in`;
             alerta.textContent = mensagem;
-    
+
             // Insere o novo alerta no início (acima dos existentes)
             if (alertaContainer.firstChild) {
                 alertaContainer.insertBefore(alerta, alertaContainer.firstChild);
             } else {
                 alertaContainer.appendChild(alerta);
             }
-    
+
             // Forçar o navegador a reconhecer a mudança de classe
             void alerta.offsetWidth;
-    
+
             alerta.classList.remove('opacity-0');
-    
+
             setTimeout(() => {
                 alerta.classList.add('animate-fade-out');
                 alerta.addEventListener('animationend', () => {
@@ -398,20 +401,35 @@
         .animate-fade-in {
             animation: fadeIn 0.3s ease-out forwards;
         }
-        
+
         .animate-fade-out {
             animation: fadeOut 0.3s ease-out forwards;
         }
-        
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
+
         @keyframes fadeOut {
-            from { opacity: 1; transform: translateY(0); }
-            to { opacity: 0; transform: translateY(10px); }
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(10px);
+            }
         }
     </style>
 </body>
+
 </html>
