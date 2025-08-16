@@ -1,28 +1,29 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciador de Matérias</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     screens: {
-                        '3xl': '1890px', // Custom breakpoint
+                        '3xl': '1890px',
                     },
                 }
             }
         };
     </script>
 </head>
-
 <body class="min-h-screen bg-zinc-100 dark:bg-zinc-900 transition-colors duration-500 flex flex-col">
     <div class="fixed top-0 right-0 p-4" id="alerta-container"></div>
     <div class="w-full max-w-screen-3xl mx-auto p-4 flex-grow">
+        <!-- Cabeçalho e controles -->
         <div class="flex justify-between items-center mb-2">
             <div>
                 <h1 class="text-2xl sm:text-3xl font-bold text-zinc-600 dark:text-zinc-100">Gerenciador de Matérias</h1>
@@ -35,81 +36,70 @@
             </button>
         </div>
 
+        <!-- Barra de pesquisa -->
         <div class="mb-4">
             <input type="text" id="pesquisa" placeholder="Pesquisar matérias..."
                 class="w-full p-2 text-sm bg-zinc-100 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 rounded-lg focus:ring-zinc-500 focus:border-zinc-500">
         </div>
 
-        <div class="flex flex-col sm:flex-row gap-2 mb-4">
-            <input type="text" id="nova-mensagem" placeholder="Digite uma nova matéria"
-                class="flex-grow p-2 text-sm bg-zinc-100 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 rounded-lg focus:ring-zinc-500 focus:border-zinc-500">
-            <button onclick="adicionarMensagem()"
+        <!-- Formulário de adição -->
+        <div class="flex flex-col sm:flex-row gap-2 mb-4 items-center">
+            <div class="flex-grow flex items-center gap-2">
+                <input type="text" id="nova-materia" placeholder="Digite uma nova matéria"
+                    class="flex-grow p-2 text-sm bg-zinc-100 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 rounded-lg focus:ring-zinc-500 focus:border-zinc-500">
+                <label class="flex items-center cursor-pointer">
+                    <input type="checkbox" id="nova-favorita" class="hidden">
+                    <div class="w-10 h-10 rounded-md bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center hover:bg-yellow-400 dark:hover:bg-yellow-600 transition-colors">
+                        <i class="fas fa-star text-yellow-500 dark:text-yellow-400 text-sm"></i>
+                    </div>
+                </label>
+            </div>
+            <button onclick="adicionarMateria()"
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm sm:text-base transition-transform active:scale-95">Adicionar</button>
         </div>
 
+        <!-- Controles -->
         <div class="flex flex-col sm:flex-row gap-2 mb-4 justify-between items-start sm:items-center">
-            <!-- Botão para copiar "Informações do trânsito" -->
-            <div class="grid grid-cols-2 xl:flex xl:flex-row w-full gap-2 sm:w-auto">
+            <div class="w-full sm:w-auto">
                 <button onclick="copiarTextoDoBotao(this)"
                     class="w-full sm:w-auto py-1 px-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg shadow cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-all active:scale-95 active:bg-zinc-400 dark:active:bg-zinc-500">
                     <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100">Informações do trânsito</span>
                 </button>
-
-                <button onclick="copiarTextoDoBotao(this)"
-                    class="w-full sm:w-auto py-1 px-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg shadow cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-all active:scale-95 active:bg-zinc-400 dark:active:bg-zinc-500">
-                    <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100">trás os destaques do</span>
-                </button>
-
-                <button onclick="copiarTextoDoBotao(this)"
-                    class="w-full sm:w-auto py-1 px-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg shadow cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-all active:scale-95 active:bg-zinc-400 dark:active:bg-zinc-500">
-                    <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100">trás informações sobre</span>
-                </button>
-
-                <button onclick="copiarTextoDoBotao(this)"
-                    class="w-full sm:w-auto py-1 px-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg shadow cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-all active:scale-95 active:bg-zinc-400 dark:active:bg-zinc-500">
-                    <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100">Entrevista com</span>
-                </button>
-
-                <button onclick="copiarTextoDoBotao(this)"
-                    class="w-full sm:w-auto py-1 px-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg shadow cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-all active:scale-95 active:bg-zinc-400 dark:active:bg-zinc-500">
-                    <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100">Debate com</span>
-                </button>
-
-                <button onclick="copiarTextoDoBotao(this)"
-                    class="w-full sm:w-auto py-1 px-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg shadow cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-all active:scale-95 active:bg-zinc-400 dark:active:bg-zinc-500">
-                    <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100">Bloco 1 |</span>
-                </button>
-
-                <button onclick="copiarTextoDoBotao(this)"
-                    class="w-full sm:w-auto py-1 px-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg shadow cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-all active:scale-95 active:bg-zinc-400 dark:active:bg-zinc-500">
-                    <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100">Parte 1 |</span>
-                </button>
             </div>
 
-            <!-- Controles de data e apagar (movidos para a direita) -->
             <div class="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
                 <select id="selecionar-data"
                     class="p-2 text-sm bg-zinc-100 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 rounded-lg focus:ring-zinc-500 focus:border-zinc-500">
                     <option value="">Todas as datas</option>
                 </select>
-                <button onclick="apagarMensagensDoDia()"
-                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm sm:text-base transition-transform active:scale-95">Apagar
-                    do Dia</button>
-                <button onclick="apagarTodasMensagens()"
-                    class="bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded text-sm sm:text-base transition-transform active:scale-95">Apagar
-                    Todas</button>
+                <button onclick="apagarMateriasDoDia()"
+                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm sm:text-base transition-transform active:scale-95">Apagar do Dia</button>
+                <button onclick="apagarTodasMaterias()"
+                    class="bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded text-sm sm:text-base transition-transform active:scale-95">Apagar Todas</button>
+                <button onclick="apagarTodasFavoritas()"
+                    class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded text-sm sm:text-base transition-transform active:scale-95">Apagar Favoritas</button>
             </div>
         </div>
 
-        <div id="mensagens" class="space-y-2"></div>
+        <!-- Listas de matérias -->
+        <div class="flex flex-col lg:flex-row gap-4">
+            <div id="materias-container" class="flex-grow space-y-2">
+                <h2 class="text-lg font-semibold text-zinc-600 dark:text-zinc-300 mb-2">Matérias</h2>
+                <div id="materias" class="space-y-2"></div>
+            </div>
+
+            <div id="favoritos-container" class="w-full lg:w-3/5 xl:w-1/3 space-y-2">
+                <h2 class="text-lg font-semibold text-zinc-600 dark:text-zinc-300 mb-2">Matérias Favoritas</h2>
+                <div id="favoritas" class="space-y-2"></div>
+            </div>
+        </div>
     </div>
 
     <footer class="bg-zinc-200 dark:bg-zinc-800 py-3 px-4 border-t border-zinc-300 dark:border-zinc-700">
-        <div
-            class="max-w-screen-3xl mx-auto flex flex-col sm:flex-row justify-between items-center text-sm text-zinc-600 dark:text-zinc-400">
+        <div class="max-w-screen-3xl mx-auto flex flex-col sm:flex-row justify-between items-center text-sm text-zinc-600 dark:text-zinc-400">
             <div class="mb-2 sm:mb-0">&reg; Todos os direitos reservados.</div>
             <div class="flex flex-col items-end">
-                <div class="text-xs mb-1">v0.1.8</div> <!-- Versão do projeto -->
+                <div class="text-xs mb-1">v0.2.0</div>
                 <div>Desenvolvido por: <a href="https://giordani.dev" target="_blank"
                         class="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">Giordani.dev</a>
                 </div>
@@ -117,359 +107,9 @@
         </div>
     </footer>
 
-    <script>
-        let mensagens =[];
-                const storageKey = 'mensagens';
-
-                // Carregar mensagens do armazenamento local
-                if(localStorage.getItem(storageKey)) {
-            mensagens = JSON.parse(localStorage.getItem(storageKey));
-            atualizarSeletorDatas();
-            exibirMensagens();
-        }
-
-        // Verificar e aplicar modo escuro
-        function applyDarkMode() {
-            const isDark = localStorage.getItem('darkMode') === 'true';
-            document.documentElement.classList.toggle('dark', isDark);
-            updateButtonText();
-        }
-
-        // Atualizar texto do botão
-        function updateButtonText() {
-            const isDark = document.documentElement.classList.contains('dark');
-            document.querySelector('.light-text').classList.toggle('hidden', isDark);
-            document.querySelector('.dark-text').classList.toggle('hidden', !isDark);
-        }
-
-        // Aplicar modo escuro ao carregar a página
-        applyDarkMode();
-
-        // Event listeners
-        document.getElementById('pesquisa').addEventListener('input', filtrarMensagens);
-        document.getElementById('nova-mensagem').addEventListener('keypress', function (event) {
-            if (event.key === 'Enter') {
-                adicionarMensagem();
-            }
-        });
-        document.getElementById('selecionar-data').addEventListener('change', function () {
-            exibirMensagens();
-        });
-
-        // Atualizar seletor de datas
-        function atualizarSeletorDatas() {
-            const seletor = document.getElementById('selecionar-data');
-            const datasExistentes = new Set();
-
-            // Manter a opção "Todas as datas"
-            seletor.innerHTML = '<option value="">Todas as datas</option>';
-
-            // Coletar datas únicas
-            mensagens.forEach(msg => {
-                datasExistentes.add(msg.data);
-            });
-
-            // Adicionar opções de data (ordenadas da mais recente para a mais antiga)
-            Array.from(datasExistentes).sort().reverse().forEach(data => {
-                const option = document.createElement('option');
-                option.value = data;
-                option.textContent = formatarDataParaExibicao(data);
-                seletor.appendChild(option);
-            });
-        }
-
-        // Formatar data para exibição (DD/MM/AAAA)
-        function formatarDataParaExibicao(dataString) {
-            const [ano, mes, dia] = dataString.split('-');
-            return `${dia}/${mes}/${ano}`;
-        }
-
-        // Obter data atual no formato AAAA-MM-DD
-        function obterDataAtual() {
-            const hoje = new Date();
-            const ano = hoje.getFullYear();
-            const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-            const dia = String(hoje.getDate()).padStart(2, '0');
-            return `${ano}-${mes}-${dia}`;
-        }
-
-        // Função para filtrar mensagens conforme o texto da pesquisa
-        function filtrarMensagens() {
-            const termoPesquisa = document.getElementById('pesquisa').value.toLowerCase();
-            const mensagensFiltradas = mensagens.filter(msg =>
-                msg.texto.toLowerCase().includes(termoPesquisa)
-            );
-            exibirMensagens(mensagensFiltradas);
-        }
-
-        function adicionarMensagem() {
-            const input = document.getElementById('nova-mensagem');
-            // Remove espaços extras no começo e fim e espaços múltiplos entre palavras
-            const texto = input.value.trim().replace(/\s+/g, ' ');
-
-            if (texto) {
-                const dataAtual = obterDataAtual();
-
-                // Verifica se a mensagem já existe (ignorando espaços extras)
-                const mensagemJaExiste = mensagens.some(m =>
-                    m.texto.trim() === texto && m.data === dataAtual
-                );
-
-                if (mensagemJaExiste) {
-                    mostrarAlerta('Esta matéria já está cadastrada para hoje!', 'bg-yellow-500');
-                    input.value = ''; // Limpa o input quando a mensagem já existe
-                    return;
-                }
-
-                // Adiciona a nova mensagem no INÍCIO do array (para aparecer no topo)
-                mensagens.unshift({
-                    texto: texto,
-                    data: dataAtual,
-                    timestamp: new Date().getTime() // Adiciona timestamp para ordenação dentro do mesmo dia
-                });
-
-                input.value = '';
-                salvarMensagens();
-                atualizarSeletorDatas();
-                exibirMensagens();
-                mostrarAlerta('Matéria salva com sucesso!');
-                document.getElementById('pesquisa').value = '';
-
-                copiarMensagem(texto, 300);
-            }
-        }
-
-        function exibirMensagens(mensagensParaExibir = null) {
-            const divMensagens = document.getElementById('mensagens');
-            divMensagens.innerHTML = '';
-
-            let mensagensExibidas = mensagensParaExibir || mensagens;
-            const dataSelecionada = document.getElementById('selecionar-data').value;
-
-            // Filtrar por data se alguma estiver selecionada
-            if (dataSelecionada) {
-                mensagensExibidas = mensagensExibidas.filter(msg => msg.data === dataSelecionada);
-            }
-
-            // Agrupar por data
-            const mensagensPorData = {};
-            mensagensExibidas.forEach(msg => {
-                if (!mensagensPorData[msg.data]) {
-                    mensagensPorData[msg.data] = [];
-                }
-                mensagensPorData[msg.data].push(msg);
-            });
-
-            // Exibir mensagens agrupadas por data
-            if (Object.keys(mensagensPorData).length === 0) {
-                const mensagem = document.createElement('div');
-                mensagem.className = 'text-center py-2 text-zinc-500 dark:text-zinc-400';
-                mensagem.textContent = 'Nenhuma matéria encontrada';
-                divMensagens.appendChild(mensagem);
-                return;
-            }
-
-            // Ordenar datas da mais recente para a mais antiga
-            const datasOrdenadas = Object.keys(mensagensPorData).sort().reverse();
-
-            datasOrdenadas.forEach(data => {
-                // Cabeçalho com a data
-                const cabecalhoData = document.createElement('div');
-                cabecalhoData.className = 'mt-4 mb-2 pb-2 border-b border-zinc-300 dark:border-zinc-600';
-                cabecalhoData.innerHTML = `
-                    <h2 class="text-lg font-semibold text-zinc-600 dark:text-zinc-300">${formatarDataParaExibicao(data)}</h2>
-                `;
-                divMensagens.appendChild(cabecalhoData);
-
-                // Ordenar mensagens do dia pela timestamp (mais recente primeiro)
-                const mensagensDoDia = mensagensPorData[data].sort((a, b) => b.timestamp - a.timestamp);
-
-                // Mensagens do dia (já ordenadas)
-                mensagensDoDia.forEach((msg, index) => {
-                    const container = document.createElement('div');
-                    container.className = 'flex items-center gap-2';
-
-                    const divMensagem = document.createElement('div');
-                    divMensagem.className = 'flex-grow py-1 px-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg shadow cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-all active:scale-95 active:bg-zinc-400 dark:active:bg-zinc-500';
-                    divMensagem.innerHTML = `
-                        <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100 break-words">${msg.texto}</span>
-                    `;
-                    // Adiciona o evento de clique para copiar
-                    divMensagem.addEventListener('click', function () {
-                        this.classList.add('bg-green-100', 'dark:bg-green-900');
-                        copiarMensagem(msg.texto);
-                        setTimeout(() => {
-                            this.classList.remove('bg-green-100', 'dark:bg-green-900');
-                        }, 300);
-                    });
-
-                    const divBotoes = document.createElement('div');
-                    divBotoes.className = 'flex gap-2';
-                    divBotoes.innerHTML = `
-                        <button onclick="apagarMensagem('${data}', ${index})" class="bg-red-500 hover:bg-red-700 text-white font-bold px-4 h-8 rounded text-sm w-20 transition-transform active:scale-95">
-                            Apagar
-                        </button>
-                    `;
-
-                    container.appendChild(divMensagem);
-                    container.appendChild(divBotoes);
-                    divMensagens.appendChild(container);
-                });
-            });
-        }
-
-        function copiarTextoDoBotao(botao) {
-            // Encontra o elemento span dentro do botão
-            const span = botao.querySelector('span');
-            if (span) {
-                // Usa a função existente para copiar o texto
-                copiarMensagem(span.textContent);
-            }
-        }
-
-        function copiarMensagem(texto, delay = 0) {
-            // Criar um elemento textarea temporário
-            const textarea = document.createElement('textarea');
-            textarea.value = texto;
-            textarea.style.position = 'fixed';
-            document.body.appendChild(textarea);
-            textarea.select();
-
-            try {
-                // Executar o comando de cópia
-                const successful = document.execCommand('copy');
-                setTimeout(() => {
-                    if (successful) {
-                        mostrarAlerta('Matéria copiada para a área de transferência!');
-                    } else {
-                        mostrarAlerta('Não foi possível copiar a matéria', 'bg-yellow-500');
-                    }
-                }, delay);
-            } catch (err) {
-                setTimeout(() => {
-                    mostrarAlerta('Erro ao copiar matéria', 'bg-red-500');
-                }, delay);
-                console.error('Erro ao copiar:', err);
-            }
-
-            // Remover o textarea
-            document.body.removeChild(textarea);
-        }
-
-        function apagarMensagem(data, index) {
-            // Encontrar índice global da mensagem
-            const mensagensDoDia = mensagens.filter(msg => msg.data === data)
-                .sort((a, b) => b.timestamp - a.timestamp);
-            const mensagemParaApagar = mensagensDoDia[index];
-            const indiceGlobal = mensagens.findIndex(msg =>
-                msg.texto === mensagemParaApagar.texto &&
-                msg.data === mensagemParaApagar.data &&
-                msg.timestamp === mensagemParaApagar.timestamp
-            );
-
-            if (indiceGlobal !== -1) {
-                mensagens.splice(indiceGlobal, 1);
-                salvarMensagens();
-                atualizarSeletorDatas();
-                exibirMensagens();
-            }
-        }
-
-        function apagarMensagensDoDia() {
-            const dataSelecionada = document.getElementById('selecionar-data').value;
-            const dataAtual = obterDataAtual();
-            const dataParaApagar = dataSelecionada || dataAtual;
-
-            if (confirm(`Tem certeza que deseja apagar todas as matérias do dia ${formatarDataParaExibicao(dataParaApagar)}?`)) {
-                mensagens = mensagens.filter(msg => msg.data !== dataParaApagar);
-                salvarMensagens();
-                atualizarSeletorDatas();
-                exibirMensagens();
-                mostrarAlerta(`Matérias do dia ${formatarDataParaExibicao(dataParaApagar)} apagadas!`);
-            }
-        }
-
-        function apagarTodasMensagens() {
-            if (confirm('Tem certeza que deseja apagar TODAS as matérias? Esta ação não pode ser desfeita!')) {
-                mensagens = [];
-                salvarMensagens();
-                atualizarSeletorDatas();
-                exibirMensagens();
-                mostrarAlerta('Todas as matérias foram apagadas!');
-            }
-        }
-
-        function salvarMensagens() {
-            localStorage.setItem(storageKey, JSON.stringify(mensagens));
-        }
-
-        function toggleDarkMode() {
-            const isDark = !document.documentElement.classList.contains('dark');
-            document.documentElement.classList.toggle('dark', isDark);
-            localStorage.setItem('darkMode', isDark);
-            updateButtonText();
-        }
-
-        function mostrarAlerta(mensagem, bgColor = 'bg-green-500') {
-            const alertaContainer = document.getElementById('alerta-container');
-            const alerta = document.createElement('div');
-            alerta.className = `${bgColor} text-white p-3 rounded-lg shadow text-sm sm:text-base mb-1 opacity-0 animate-fade-in`;
-            alerta.textContent = mensagem;
-
-            // Insere o novo alerta no início (acima dos existentes)
-            if (alertaContainer.firstChild) {
-                alertaContainer.insertBefore(alerta, alertaContainer.firstChild);
-            } else {
-                alertaContainer.appendChild(alerta);
-            }
-
-            // Forçar o navegador a reconhecer a mudança de classe
-            void alerta.offsetWidth;
-
-            alerta.classList.remove('opacity-0');
-
-            setTimeout(() => {
-                alerta.classList.add('animate-fade-out');
-                alerta.addEventListener('animationend', () => {
-                    alerta.remove();
-                }, { once: true });
-            }, 2500);
-        }
-    </script>
-
-    <style>
-        .animate-fade-in {
-            animation: fadeIn 0.3s ease-out forwards;
-        }
-
-        .animate-fade-out {
-            animation: fadeOut 0.3s ease-out forwards;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-                transform: translateY(0);
-            }
-
-            to {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-        }
-    </style>
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/materias.js"></script>
+    <script src="js/favoritas.js"></script>
 </body>
-
 </html>
