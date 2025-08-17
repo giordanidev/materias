@@ -74,6 +74,16 @@ function copiarMateria(texto, delay = 0) {
     }
 }
 
+function copiarTextoDoBotao(span) {
+    try {
+        const texto = span.textContent.trim();
+        copiarMateria(texto, 100);
+    } catch (error) {
+        console.error('Erro ao copiar texto do botão:', error);
+        mostrarAlerta('Erro ao copiar texto', 'bg-red-500');
+    }
+}
+
 function toggleDarkMode() {
     const isDark = !document.documentElement.classList.contains('dark');
     document.documentElement.classList.toggle('dark', isDark);
