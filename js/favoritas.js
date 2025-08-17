@@ -50,6 +50,7 @@ function removerFavorita(index) {
         favoritas.splice(index, 1);
         salvarDados();
         exibirFavoritas();
+        mostrarAlerta('Matéria favorita apagada!');
     }
 }
 

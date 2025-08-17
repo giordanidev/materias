@@ -83,6 +83,7 @@ function apagarMateria(index) {
         salvarDados();
         atualizarSeletorDatas();
         exibirMaterias();
+        mostrarAlerta('Matéria apagada!');
     }
 }
 
