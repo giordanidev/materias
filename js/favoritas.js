@@ -12,15 +12,15 @@ function exibirFavoritas() {
     divFavoritas.innerHTML = favoritas.map((mat, index) => `
         <div class="flex items-center gap-2">
             <div onclick="copiarMateria('${mat.texto.replace(/'/g, "\\'")}')"
-                class="flex-grow py-1 px-2 bg-yellow-100 dark:bg-yellow-900 rounded-lg cursor-pointer hover:bg-yellow-200 dark:hover:bg-yellow-800 transition-all active:scale-95">
+                class="flex-grow py-1 px-2 bg-yellow-100 dark:bg-yellow-700/80 rounded-lg cursor-pointer hover:bg-yellow-200 dark:hover:bg-yellow-800/80 transition-all active:scale-95">
                 <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100 break-words">${mat.texto}</span>
             </div>
             <button onclick="moverParaMateriasNormais(${index})"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold px-3 h-8 rounded text-sm transition-transform active:scale-95">
+                class="bg-blue-500/80 hover:bg-blue-700/80 text-white font-bold px-3 h-8 rounded text-sm transition-transform active:scale-95">
                 <i class="fas fa-arrow-left"></i>
             </button>
             <button onclick="removerFavorita(${index})"
-                class="bg-red-500 hover:bg-red-700 text-white font-bold px-3 h-8 rounded text-sm transition-transform active:scale-95">
+                class="bg-red-500/80 hover:bg-red-700/80 text-white font-bold px-3 h-8 rounded text-sm transition-transform active:scale-95">
                 <i class="fas fa-trash"></i>
             </button>
         </div>
