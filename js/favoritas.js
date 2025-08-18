@@ -16,11 +16,11 @@ function exibirFavoritas() {
                 <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100 break-words">${mat.texto}</span>
             </div>
             <button onclick="moverParaMateriasNormais(${index})"
-                class="bg-blue-500/80 hover:bg-blue-700/80 text-white font-bold px-3 h-8 rounded text-sm transition-transform active:scale-95">
+                class="bg-blue-500 hover:bg-blue-700/80 text-white font-bold px-3 h-8 rounded text-sm transition-transform active:scale-95">
                 <i class="fas fa-arrow-left"></i>
             </button>
             <button onclick="removerFavorita(${index})"
-                class="bg-red-500/80 hover:bg-red-700/80 text-white font-bold px-3 h-8 rounded text-sm transition-transform active:scale-95">
+                class="bg-red-500 hover:bg-red-700/80 text-white font-bold px-3 h-8 rounded text-sm transition-transform active:scale-95">
                 <i class="fas fa-trash"></i>
             </button>
         </div>
