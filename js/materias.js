@@ -90,7 +90,7 @@ function criarItemMateria(mat, index) {
     return `
         <div class="flex items-center gap-2">
             <div onclick="copiarMateria('${mat.texto.replace(/'/g, "\\'")}')"
-                class="flex-grow py-1 px-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-all active:scale-95">
+                class="flex-grow py-1 px-2 bg-zinc-200 dark:bg-zinc-800 rounded-lg cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-all active:scale-95">
                 <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100 break-words">${mat.texto}</span>
             </div>
             <button onclick="event.stopPropagation(); moverParaFavoritas('${mat.data}', ${index})"
