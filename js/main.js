@@ -5,6 +5,7 @@ let materias = [];
 let favoritas = [];
 const storageKey = 'materias';
 const favoritasKey = 'materiasFavoritas';
+const dataSelecionadaKey = 'dataSelecionada';
 
 /**************************************
  * FUNÇÕES COMPARTILHADAS             *

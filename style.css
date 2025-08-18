@@ -36,38 +36,3 @@
 #nova-favorita:checked + div i {
     color: white;
 }
-
-/* Listas */
-#materias, #favoritas {
-    max-height: calc(100vh - 300px);
-    overflow-y: auto;
-    padding-right: 4px;
-}
-
-/* Scrollbar */
-#materias::-webkit-scrollbar,
-#favoritas::-webkit-scrollbar {
-    width: 6px;
-}
-
-#materias::-webkit-scrollbar-track,
-#favoritas::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-}
-
-#materias::-webkit-scrollbar-thumb,
-#favoritas::-webkit-scrollbar-thumb {
-    background: #d1d5db;
-    border-radius: 10px;
-}
-
-.dark #materias::-webkit-scrollbar-track,
-.dark #favoritas::-webkit-scrollbar-track {
-    background: #374151;
-}
-
-.dark #materias::-webkit-scrollbar-thumb,
-.dark #favoritas::-webkit-scrollbar-thumb {
-    background: #4b5563;
-}

@@ -5,7 +5,16 @@ function atualizarSeletorDatas() {
     const seletor = document.getElementById('selecionar-data');
     const datasExistentes = [...new Set(materias.map(mat => mat.data))].filter(Boolean);
 
-    seletor.innerHTML = '<option value="">Todas as datas</option>';
+    // Adicionar opção para últimos 2 dias
+    const hoje = new Date();
+    const ontem = new Date(hoje.getTime() - 24 * 60 * 60 * 1000);
+    const dataAtual = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}-${String(hoje.getDate()).padStart(2, '0')}`;
+    const dataOntem = `${ontem.getFullYear()}-${String(ontem.getMonth() + 1).padStart(2, '0')}-${String(ontem.getDate()).padStart(2, '0')}`;
+
+    seletor.innerHTML = `
+        <option value="">Todas as datas</option>
+        <option value="ultimos-2-dias">Últimos 2 dias</option>
+    `;
     
     datasExistentes
         .sort().reverse()
@@ -15,6 +24,12 @@ function atualizarSeletorDatas() {
             option.textContent = formatarDataParaExibicao(data);
             seletor.appendChild(option);
         });
+
+    // Carregar seleção de data do localStorage
+    const dataSelecionada = localStorage.getItem(dataSelecionadaKey);
+    if (dataSelecionada) {
+        seletor.value = dataSelecionada;
+    }
 }
 
 function filtrarMaterias() {
@@ -28,11 +43,24 @@ function filtrarMaterias() {
 function exibirMaterias(materiasParaExibir = null) {
     const divMaterias = document.getElementById('materias');
     const materiasExibidas = materiasParaExibir || materias;
-    const dataSelecionada = document.getElementById('selecionar-data').value;
+    const seletor = document.getElementById('selecionar-data');
+    const dataSelecionada = seletor.value;
 
-    const materiasFiltradas = dataSelecionada
-        ? materiasExibidas.filter(mat => mat.data === dataSelecionada)
-        : materiasExibidas;
+    // Salvar seleção de data no localStorage
+    localStorage.setItem(dataSelecionadaKey, dataSelecionada);
+
+    let materiasFiltradas;
+    if (dataSelecionada === "ultimos-2-dias") {
+        const hoje = new Date();
+        const ontem = new Date(hoje.getTime() - 24 * 60 * 60 * 1000);
+        const dataAtual = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}-${String(hoje.getDate()).padStart(2, '0')}`;
+        const dataOntem = `${ontem.getFullYear()}-${String(ontem.getMonth() + 1).padStart(2, '0')}-${String(ontem.getDate()).padStart(2, '0')}`;
+        materiasFiltradas = materiasExibidas.filter(mat => mat.data === dataAtual || mat.data === dataOntem);
+    } else if (dataSelecionada) {
+        materiasFiltradas = materiasExibidas.filter(mat => mat.data === dataSelecionada);
+    } else {
+        materiasFiltradas = materiasExibidas;
+    }
 
     if (materiasFiltradas.length === 0) {
         divMaterias.innerHTML = '<div class="text-center py-2 text-zinc-500 dark:text-zinc-400">Nenhuma matéria encontrada</div>';
@@ -140,3 +168,7 @@ function moverParaFavoritas(data, index) {
         mostrarAlerta('Matéria movida para favoritas!', 'bg-yellow-500');
     }
 }
+
+document.getElementById('selecionar-data').addEventListener('change', () => {
+    exibirMaterias();
+});
