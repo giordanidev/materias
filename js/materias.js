@@ -15,7 +15,7 @@ function atualizarSeletorDatas() {
         <option value="">Todas as datas</option>
         <option value="ultimos-2-dias">Últimos 2 dias</option>
     `;
-    
+
     datasExistentes
         .sort().reverse()
         .forEach(data => {
@@ -34,7 +34,7 @@ function atualizarSeletorDatas() {
 
 function filtrarMaterias() {
     const termo = document.getElementById('pesquisa').value.toLowerCase();
-    const materiasFiltradas = termo 
+    const materiasFiltradas = termo
         ? materias.filter(mat => mat.texto.toLowerCase().includes(termo))
         : materias;
     exibirMaterias(materiasFiltradas);
@@ -50,7 +50,10 @@ function exibirMaterias(materiasParaExibir = null) {
     localStorage.setItem(dataSelecionadaKey, dataSelecionada);
 
     let materiasFiltradas;
-    if (dataSelecionada === "ultimos-2-dias") {
+    if (materiasParaExibir) {
+        // Se está exibindo resultado de pesquisa, não filtra por data
+        materiasFiltradas = materiasExibidas;
+    } else if (dataSelecionada === "ultimos-2-dias") {
         const hoje = new Date();
         const ontem = new Date(hoje.getTime() - 24 * 60 * 60 * 1000);
         const dataAtual = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}-${String(hoje.getDate()).padStart(2, '0')}`;
@@ -118,7 +121,7 @@ function apagarMateria(index) {
 function apagarMateriasDoDia() {
     const data = document.getElementById('selecionar-data').value || obterDataAtual();
     const materiasDoDia = materias.filter(mat => mat.data === data);
-    
+
     if (materiasDoDia.length === 0) {
         mostrarAlerta(`Nenhuma matéria encontrada para o dia ${formatarDataParaExibicao(data)}`, 'bg-yellow-500');
         return;
@@ -152,13 +155,13 @@ function moverParaFavoritas(data, index) {
     const materiasDoDia = materias.filter(mat => mat.data === data);
     if (index >= 0 && index < materiasDoDia.length) {
         const materia = materiasDoDia[index];
-        
+
         // Verifica se já existe nas favoritas, ignorando a própria matéria que está sendo movida
         if (materiaJaExiste(materia.texto, materia)) {
             mostrarAlerta('Esta matéria já existe nas favoritas!', 'bg-yellow-500');
             return;
         }
-        
+
         favoritas.unshift(materia);
         materias = materias.filter(m => m.timestamp !== materia.timestamp);
         salvarDados();
