@@ -34,10 +34,15 @@ function atualizarSeletorDatas() {
 
 function filtrarMaterias() {
     const termo = document.getElementById('pesquisa').value.toLowerCase();
-    const materiasFiltradas = termo
-        ? materias.filter(mat => mat.texto.toLowerCase().includes(termo))
-        : materias;
-    exibirMaterias(materiasFiltradas);
+    if (termo) {
+        const materiasFiltradas = termo
+            ? materias.filter(mat => mat.texto.toLowerCase().includes(termo))
+            : materias;
+        exibirMaterias(materiasFiltradas);
+    } else {
+        // Quando não há termo, volta a respeitar o filtro de data
+        exibirMaterias();
+    }
 }
 
 function exibirMaterias(materiasParaExibir = null) {
