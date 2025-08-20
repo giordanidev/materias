@@ -37,7 +37,7 @@ function exibirFavoritas(favoritasParaExibir = null) {
 
     divFavoritas.innerHTML = `
         <div class="bg-zinc-200/50 dark:bg-zinc-800/80 rounded-lg p-3 transition-colors">
-            <div class="space-y-1">
+            <div>
                 ${itensFavoritosHTML}
             </div>
         </div>

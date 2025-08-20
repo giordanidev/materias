@@ -135,7 +135,7 @@ function exibirMaterias(materiasParaExibir = null) {
     divMaterias.innerHTML = Object.keys(materiasPorData)
         .sort().reverse()
         .map(data => `
-            <div class="bg-zinc-200/50 dark:bg-zinc-800/80 rounded-lg p-3 transition-colors">
+            <div class="bg-zinc-200/50 dark:bg-zinc-800/80 rounded-lg p-3 transition-colors mb-2">
                 <div class="pb-2 border-b border-zinc-300 dark:border-zinc-600 mb-2">
                     <h3 class="text-md font-semibold text-zinc-600 dark:text-zinc-300">${formatarDataParaExibicao(data)}</h3>
                 </div>
