@@ -1,6 +1,46 @@
 /**************************************
  * FUNÇÕES PARA MATÉRIAS PADRÃO       *
  **************************************/
+function adicionarMateria() {
+    const input = document.getElementById('nova-materia');
+    const texto = input.value.trim().replace(/\s+/g, ' ');
+    const isFavorita = document.getElementById('nova-favorita').checked;
+
+    if (!texto) return;
+
+    if (materiaJaExiste(texto)) {
+        mostrarAlerta('Esta matéria já existe nas listas!', 'bg-yellow-500');
+        input.value = '';
+        return;
+    }
+
+    const novaMateria = {
+        texto,
+        data: obterDataAtual(),
+        timestamp: new Date().getTime()
+    };
+
+    if (isFavorita) {
+        favoritas.unshift(novaMateria);
+        mostrarAlerta('Matéria favorita adicionada!', 'bg-yellow-500');
+    } else {
+        materias.unshift(novaMateria);
+        mostrarAlerta('Matéria adicionada!');
+    }
+
+    // Limpar campos e desmarcar o checkbox
+    input.value = '';
+    document.getElementById('nova-favorita').checked = false;
+    resetarEstiloCheckbox();
+
+    // Atualizar interface
+    salvarDados();
+    atualizarSeletorDatas();
+    exibirMaterias();
+    exibirFavoritas();
+    copiarMateria(texto, 300);
+}
+
 function atualizarSeletorDatas() {
     const seletor = document.getElementById('selecionar-data');
     const datasExistentes = [...new Set(materias.map(mat => mat.data))].filter(Boolean);
@@ -98,7 +138,7 @@ function criarItemMateria(mat, index) {
     return `
         <div class="flex items-center gap-2">
             <div onclick="copiarMateria('${mat.texto.replace(/'/g, "\\'")}')"
-                class="flex-grow py-1 px-2 bg-zinc-200 dark:bg-zinc-800 rounded-lg cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-all active:scale-95">
+                class="flex-grow py-1 px-2 bg-zinc-200 dark:bg-zinc-800 rounded-lg cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-all">
                 <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100 break-words">${mat.texto}</span>
             </div>
             <button onclick="event.stopPropagation(); moverParaFavoritas('${mat.data}', ${index})"
@@ -179,4 +219,31 @@ function moverParaFavoritas(data, index) {
 
 document.getElementById('selecionar-data').addEventListener('change', () => {
     exibirMaterias();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const pesquisaInput = document.getElementById('pesquisa');
+    const btnLimparPesquisa = document.getElementById('btn-limpar-pesquisa');
+
+    if (pesquisaInput && btnLimparPesquisa) {
+        pesquisaInput.addEventListener('input', () => {
+            if (pesquisaInput.value.trim()) {
+                btnLimparPesquisa.classList.remove('hidden');
+                btnLimparPesquisa.classList.remove('bg-zinc-300', 'dark:bg-zinc-700');
+                btnLimparPesquisa.classList.add('bg-red-500');
+            } else {
+                btnLimparPesquisa.classList.add('hidden');
+                btnLimparPesquisa.classList.remove('bg-red-500');
+                btnLimparPesquisa.classList.add('bg-zinc-300', 'dark:bg-zinc-700');
+            }
+        });
+
+        btnLimparPesquisa.addEventListener('click', () => {
+            pesquisaInput.value = '';
+            btnLimparPesquisa.classList.add('hidden');
+            btnLimparPesquisa.classList.remove('bg-red-500');
+            btnLimparPesquisa.classList.add('bg-zinc-300', 'dark:bg-zinc-700');
+            filtrarMaterias();
+        });
+    }
 });

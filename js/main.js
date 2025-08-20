@@ -57,19 +57,27 @@ function copiarMateria(texto, delay = 0) {
     textarea.value = texto;
     document.body.appendChild(textarea);
     textarea.select();
+    document.getElementById('pesquisa').value = '';
+    exibirMaterias();
+    exibirFavoritas(); // Garante atualização das favoritas
 
     try {
-        const successful = document.execCommand('copy');
+        document.execCommand('copy');
+        mostrarAlerta('Matéria copiada!');
         setTimeout(() => {
-            mostrarAlerta(
-                successful 
-                    ? 'Matéria copiada!' 
-                    : 'Falha ao copiar',
-                successful ? 'bg-green-500' : 'bg-yellow-500'
-            );
+            // Aplica o ring tanto nas matérias quanto nas favoritas
+            document.querySelectorAll('.flex-grow.py-1.px-2').forEach(el => {
+                if (el.textContent.trim() === texto.trim()) {
+                    // Remove a classe se já existe, força reflow, adiciona novamente
+                    el.classList.remove('ring-copiado');
+                    void el.offsetWidth;
+                    el.classList.add('ring-copiado');
+                    setTimeout(() => el.classList.remove('ring-copiado'), 2000);
+                }
+            });
         }, delay);
     } catch (err) {
-        setTimeout(() => mostrarAlerta('Erro ao copiar', 'bg-red-500'), delay);
+        mostrarAlerta('Erro ao copiar', 'bg-red-500');
     } finally {
         document.body.removeChild(textarea);
     }

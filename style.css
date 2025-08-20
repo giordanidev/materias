@@ -36,3 +36,22 @@
 #nova-favorita:checked + div i {
     color: white;
 }
+
+.ring-copiado {
+    box-shadow: 0 0 0 4px #22c55e80; /* verde-500 com transparência */
+    transition: box-shadow 0.3s;
+    animation: ringFadeOut 2s forwards;
+}
+
+@keyframes ringFadeOut {
+    0% { box-shadow: 0 0 0 4px #22c55e80; }
+    100% { box-shadow: 0 0 0 0px #22c55e00; }
+}
+
+#alerta-container {
+    z-index: 50;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: auto;
+}
