@@ -52,44 +52,45 @@ function mostrarAlerta(mensagem, bgColor = 'bg-green-500') {
     }, 2500);
 }
 
-function copiarMateria(texto, delay = 0) {
+function copiarMateria(texto, delay = 0, elementToRing = null) {
     const textarea = document.createElement('textarea');
     textarea.value = texto;
     document.body.appendChild(textarea);
     textarea.select();
-    document.getElementById('pesquisa').value = '';
-    exibirMaterias();
-    exibirFavoritas(); // Garante atualização das favoritas
+
+    // Limpa a pesquisa se houver texto
+    const pesquisaInput = document.getElementById('pesquisa');
+    if (pesquisaInput.value) {
+        pesquisaInput.value = '';
+        pesquisaInput.dispatchEvent(new Event('input')); // Reseta o botão de limpar
+        filtrarMaterias(); // Filtra para mostrar as listas completas novamente
+    }
 
     try {
         document.execCommand('copy');
         mostrarAlerta('Matéria copiada!');
-        setTimeout(() => {
-            // Aplica o ring tanto nas matérias quanto nas favoritas
-            document.querySelectorAll('.flex-grow.py-1.px-2').forEach(el => {
-                if (el.textContent.trim() === texto.trim()) {
-                    // Remove a classe se já existe, força reflow, adiciona novamente
-                    el.classList.remove('ring-copiado');
-                    void el.offsetWidth;
-                    el.classList.add('ring-copiado');
-                    setTimeout(() => el.classList.remove('ring-copiado'), 2000);
-                }
-            });
-        }, delay);
+        
+        // Aplica o ring verde diretamente ao elemento clicado
+        if (elementToRing) {
+            setTimeout(() => {
+                elementToRing.classList.remove('ring-copiado');
+                void elementToRing.offsetWidth; // Força reflow para reiniciar a animação
+                elementToRing.classList.add('ring-copiado');
+                setTimeout(() => {
+                    // Garante que o elemento ainda existe antes de remover a classe
+                    if (elementToRing && elementToRing.parentElement) {
+                        elementToRing.classList.remove('ring-copiado');
+                    }
+                }, 2000);
+            }, delay);
+        }
     } catch (err) {
         mostrarAlerta('Erro ao copiar', 'bg-red-500');
     } finally {
         document.body.removeChild(textarea);
-    }
-}
-
-function copiarTextoDoBotao(span) {
-    try {
-        const texto = span.textContent.trim();
-        copiarMateria(texto, 100);
-    } catch (error) {
-        console.error('Erro ao copiar texto do botão:', error);
-        mostrarAlerta('Erro ao copiar texto', 'bg-red-500');
+        // NÃO redesenhar as listas aqui
+        // exibirMaterias();    <-- REMOVIDO
+        // exibirFavoritas();  <-- REMOVIDO
     }
 }
 

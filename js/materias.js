@@ -14,10 +14,11 @@ function adicionarMateria() {
         return;
     }
 
+    const timestamp = new Date().getTime();
     const novaMateria = {
         texto,
         data: obterDataAtual(),
-        timestamp: new Date().getTime()
+        timestamp: timestamp
     };
 
     if (isFavorita) {
@@ -31,14 +32,21 @@ function adicionarMateria() {
     // Limpar campos e desmarcar o checkbox
     input.value = '';
     document.getElementById('nova-favorita').checked = false;
-    resetarEstiloCheckbox();
+    resetarCheckboxFavorito();
 
     // Atualizar interface
     salvarDados();
     atualizarSeletorDatas();
     exibirMaterias();
     exibirFavoritas();
-    copiarMateria(texto, 300);
+
+    // Copia e anima o elemento recém-adicionado
+    requestAnimationFrame(() => {
+        const elementoAdicionado = document.querySelector(`div[data-timestamp="${timestamp}"]`);
+        if (elementoAdicionado) {
+            copiarMateria(texto, 100, elementoAdicionado);
+        }
+    });
 }
 
 function atualizarSeletorDatas() {
@@ -73,15 +81,18 @@ function atualizarSeletorDatas() {
 }
 
 function filtrarMaterias() {
-    const termo = document.getElementById('pesquisa').value.toLowerCase();
+    const termo = document.getElementById('pesquisa').value.trim().toLowerCase();
+
     if (termo) {
-        const materiasFiltradas = termo
-            ? materias.filter(mat => mat.texto.toLowerCase().includes(termo))
-            : materias;
+        const materiasFiltradas = materias.filter(m => m.texto.toLowerCase().includes(termo));
+        const favoritasFiltradas = favoritas.filter(f => f.texto.toLowerCase().includes(termo));
+        
         exibirMaterias(materiasFiltradas);
+        exibirFavoritas(favoritasFiltradas);
     } else {
-        // Quando não há termo, volta a respeitar o filtro de data
+        // Quando não há termo, exibe tudo normalmente
         exibirMaterias();
+        exibirFavoritas();
     }
 }
 
@@ -124,29 +135,36 @@ function exibirMaterias(materiasParaExibir = null) {
     divMaterias.innerHTML = Object.keys(materiasPorData)
         .sort().reverse()
         .map(data => `
-            <div class="mt-4 mb-2 pb-2 border-b border-zinc-300 dark:border-zinc-600">
-                <h3 class="text-md font-semibold text-zinc-600 dark:text-zinc-300">${formatarDataParaExibicao(data)}</h3>
+            <div class="bg-zinc-200/50 dark:bg-zinc-800/80 rounded-lg p-3 transition-colors">
+                <div class="pb-2 border-b border-zinc-300 dark:border-zinc-600 mb-2">
+                    <h3 class="text-md font-semibold text-zinc-600 dark:text-zinc-300">${formatarDataParaExibicao(data)}</h3>
+                </div>
+                <div>
+                ${materiasPorData[data]
+                    .sort((a, b) => b.timestamp - a.timestamp)
+                    .map((mat) => {
+                        const originalIndex = materias.findIndex(m => m.timestamp === mat.timestamp);
+                        return criarItemMateria(mat, originalIndex);
+                    })
+                    .join('')}
+                </div>
             </div>
-            ${materiasPorData[data]
-                .sort((a, b) => b.timestamp - a.timestamp)
-                .map((mat, index) => criarItemMateria(mat, index))
-                .join('')}
         `).join('');
 }
 
-function criarItemMateria(mat, index) {
+function criarItemMateria(mat, originalIndex) {
     return `
         <div class="flex items-center gap-2">
-            <div onclick="copiarMateria('${mat.texto.replace(/'/g, "\\'")}')"
-                class="flex-grow py-1 px-2 bg-zinc-200 dark:bg-zinc-800 rounded-lg cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-all">
+            <div onclick="copiarMateria('${mat.texto.replace(/'/g, "\\'")}', 0, this)" data-timestamp="${mat.timestamp}"
+                class="flex-grow py-1 px-2 rounded-lg cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-all active:bg-zinc-400 dark:active:bg-zinc-500 min-w-0">
                 <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100 break-words">${mat.texto}</span>
             </div>
-            <button onclick="event.stopPropagation(); moverParaFavoritas('${mat.data}', ${index})"
-                class="bg-zinc-300 dark:bg-zinc-700 text-yellow-500 hover:bg-yellow-500/80 dark:hover:bg-yellow-500/80 hover:text-white font-bold px-3 h-8 rounded text-sm transition-transform active:scale-95">
+            <button onclick="event.stopPropagation(); moverParaFavoritas(${originalIndex})" title="Mover para favoritas"
+                class="bg-transparent text-yellow-500 hover:bg-zinc-300 dark:hover:bg-zinc-700 font-bold p-2 w-8 h-8 rounded text-sm transition-colors">
                 <i class="fas fa-star"></i>
             </button>
-            <button onclick="event.stopPropagation(); apagarMateria(${index})"
-                class="bg-zinc-300 dark:bg-zinc-700 text-red-600 hover:bg-red-600/80 dark:hover:bg-red-600/80 hover:text-white font-bold px-3 h-8 rounded text-sm transition-transform active:scale-95">
+            <button onclick="event.stopPropagation(); apagarMateria(${originalIndex})" title="Apagar matéria"
+                class="bg-transparent text-red-500 hover:bg-zinc-300 dark:hover:bg-zinc-700 font-bold p-2 w-8 h-8 rounded text-sm transition-colors">
                 <i class="fas fa-trash"></i>
             </button>
         </div>
@@ -196,10 +214,9 @@ function apagarTodasMaterias() {
     }
 }
 
-function moverParaFavoritas(data, index) {
-    const materiasDoDia = materias.filter(mat => mat.data === data);
-    if (index >= 0 && index < materiasDoDia.length) {
-        const materia = materiasDoDia[index];
+function moverParaFavoritas(index) {
+    if (index >= 0 && index < materias.length) {
+        const materia = materias[index];
 
         // Verifica se já existe nas favoritas, ignorando a própria matéria que está sendo movida
         if (materiaJaExiste(materia.texto, materia)) {
@@ -227,22 +244,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (pesquisaInput && btnLimparPesquisa) {
         pesquisaInput.addEventListener('input', () => {
-            if (pesquisaInput.value.trim()) {
-                btnLimparPesquisa.classList.remove('hidden');
-                btnLimparPesquisa.classList.remove('bg-zinc-300', 'dark:bg-zinc-700');
-                btnLimparPesquisa.classList.add('bg-red-500');
-            } else {
-                btnLimparPesquisa.classList.add('hidden');
-                btnLimparPesquisa.classList.remove('bg-red-500');
-                btnLimparPesquisa.classList.add('bg-zinc-300', 'dark:bg-zinc-700');
-            }
+            const hasText = pesquisaInput.value.trim() !== '';
+            // Apenas alterna o atributo 'data-active'
+            btnLimparPesquisa.dataset.active = hasText;
         });
 
         btnLimparPesquisa.addEventListener('click', () => {
             pesquisaInput.value = '';
-            btnLimparPesquisa.classList.add('hidden');
-            btnLimparPesquisa.classList.remove('bg-red-500');
-            btnLimparPesquisa.classList.add('bg-zinc-300', 'dark:bg-zinc-700');
+            // Dispara o evento 'input' para resetar o estilo do botão
+            pesquisaInput.dispatchEvent(new Event('input'));
             filtrarMaterias();
         });
     }

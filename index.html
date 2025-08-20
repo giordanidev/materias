@@ -27,7 +27,7 @@
 </head>
 
 <body class="min-h-screen bg-zinc-100 dark:bg-zinc-900 transition-colors duration-500 flex flex-col">
-    <div class="fixed top-0 right-0 p-4" id="alerta-container"></div>
+    <div id="alerta-container" class="fixed top-0 right-0 p-4 z-50 w-auto"></div>
     <div class="w-full max-w-screen-3xl mx-auto p-4 flex-grow">
         <!-- Cabeçalho e controles -->
         <div class="flex justify-between items-center mb-2">
@@ -35,7 +35,7 @@
                 <h1 class="text-2xl sm:text-3xl font-bold text-zinc-600 dark:text-zinc-100">Gerenciador de Matérias</h1>
                 <p class="text-sm text-zinc-500 dark:text-zinc-400">Clique em uma matéria para copiá-la</p>
             </div>
-            <button onclick="toggleDarkMode()"
+            <button onclick="toggleDarkMode()" title="Alternar modo claro/escuro"
                 class="bg-zinc-200 hover:bg-zinc-300 text-zinc-600 font-bold py-2 px-4 rounded dark:bg-zinc-700 dark:hover:bg-zinc-800 dark:text-zinc-100 text-sm sm:text-base transition-transform active:scale-95">
                 <span class="light-text">Modo Escuro</span>
                 <span class="dark-text hidden">Modo Claro</span>
@@ -46,27 +46,30 @@
             <!-- Formulário de adição -->
             <div class="flex flex-col w-2/3 sm:flex-row gap-2 mb-4 items-center">
                 <div class="flex-grow flex items-center gap-2">
-                    <input type="text" id="nova-materia" placeholder="Digite uma nova matéria"
-                        class="flex-grow p-2 text-sm bg-white dark:bg-zinc-700 text-zinc-600 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 rounded-lg focus:ring-zinc-500 focus:border-zinc-500">
-                    <label class="flex items-center cursor-pointer">
-                        <input type="checkbox" id="nova-favorita" class="hidden">
+                    <div class="flex-grow flex items-center bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-zinc-500 transition-all">
+                        <input type="text" id="nova-materia" placeholder="Digite uma nova matéria"
+                            class="w-full p-2 text-sm bg-transparent text-zinc-600 dark:text-zinc-100 border-none focus:ring-0">
+                    </div>
+                    <label class="flex items-center cursor-pointer" title="Marcar como favorita">
+                        <input type="checkbox" id="nova-favorita" class="hidden peer">
                         <div
-                            class="w-10 h-10 rounded-md bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center hover:bg-yellow-400/80 text-yellow-500 hover:text-white dark:hover:bg-yellow-600/80 transition-colors">
+                            class="w-10 h-10 rounded-md bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-yellow-500 hover:bg-yellow-400/80 hover:text-white dark:hover:bg-yellow-600/80 transition-colors peer-checked:bg-yellow-500 peer-checked:text-white">
                             <i class="fas fa-star text-sm"></i>
                         </div>
                     </label>
                 </div>
-                <button onclick="adicionarMateria()"
+                <button onclick="adicionarMateria()" title="Adicionar matéria"
                     class="bg-blue-500/80 hover:bg-blue-700/80 text-white font-bold py-2 px-4 rounded text-sm sm:text-base transition-transform active:scale-95">Adicionar</button>
             </div>
 
             <!-- Barra de pesquisa -->
-            <div class="w-1/3 mb-4 relative">
-                <input type="text" id="pesquisa" placeholder="Pesquisar matérias..."
-                    class="w-full p-2 text-sm bg-white dark:bg-zinc-700 text-zinc-600 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 rounded-lg focus:ring-zinc-500 focus:border-zinc-500 pr-10">
-                <button id="btn-limpar-pesquisa" type="button"
-                    class="absolute right-2 top-1/2 -translate-y-1/2 bg-zinc-300 dark:bg-zinc-700 text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors hidden"
-                    style="z-index:2;">
+            <div class="w-1/3 mb-4 flex items-center gap-2">
+                <div class="flex-grow flex items-center bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-zinc-500 transition-all">
+                    <input type="text" id="pesquisa" placeholder="Pesquisar matérias..."
+                        class="w-full p-2 text-sm bg-transparent text-zinc-600 dark:text-zinc-100 border-none focus:ring-0">
+                </div>
+                <button id="btn-limpar-pesquisa" type="button" title="Limpar pesquisa"
+                    class="flex-shrink-0 text-zinc-400 bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 w-10 h-10 flex items-center justify-center rounded-lg transition-colors">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
@@ -75,8 +78,8 @@
         <!-- Controles -->
         <div class="flex flex-col sm:flex-row gap-2 mb-4 justify-between items-start sm:items-center">
             <div class="w-full sm:w-auto">
-                <button onclick="copiarTextoDoBotao(this)"
-                    class="w-full sm:w-auto py-1 px-2 bg-zinc-200 dark:bg-zinc-800 rounded-lg shadow cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-all active:scale-95 active:bg-zinc-400 dark:active:bg-zinc-500">
+                <button onclick="copiarMateria(this.querySelector('span').textContent, 0, this)"
+                    class="w-full sm:w-auto py-1 px-2 bg-zinc-200 dark:bg-zinc-800 rounded-lg shadow cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-all active:bg-zinc-400 dark:active:bg-zinc-500">
                     <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100">Informações do trânsito</span>
                 </button>
             </div>
@@ -86,28 +89,28 @@
                     class="p-2 text-sm bg-white dark:bg-zinc-700 text-zinc-600 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 rounded-lg focus:ring-zinc-500 focus:border-zinc-500">
                     <option value="">Todas as datas</option>
                 </select>
-                <button onclick="apagarMateriasDoDia()"
+                <button onclick="apagarMateriasDoDia()" title="Apagar matérias da data selecionada"
                     class="bg-red-500/80 hover:bg-red-700/80 text-white font-bold py-2 px-4 rounded text-sm sm:text-base transition-transform active:scale-95">Apagar
                     do Dia</button>
-                <button onclick="apagarTodasMaterias()"
+                <button onclick="apagarTodasMaterias()" title="Apagar todas as matérias"
                     class="bg-red-500/80 hover:bg-red-800/80 text-white font-bold py-2 px-4 rounded text-sm sm:text-base transition-transform active:scale-95">Apagar
                     Todas</button>
-                <button onclick="apagarTodasFavoritas()"
+                <button onclick="apagarTodasFavoritas()" title="Apagar todas as favoritas"
                     class="bg-yellow-500/80 hover:bg-yellow-700/80 text-white font-bold py-2 px-4 rounded text-sm sm:text-base transition-transform active:scale-95">Apagar
                     Favoritas</button>
             </div>
         </div>
 
         <!-- Listas de matérias -->
-        <div class="flex flex-col lg:flex-row gap-4">
-            <div id="materias-container" class="flex-grow space-y-2">
+        <div class="flex flex-col lg:flex-row gap-2">
+            <div id="materias-container" class="flex-grow space-y-2 min-h-[200px]">
                 <h2 class="text-lg font-semibold text-zinc-600 dark:text-zinc-300 mb-2">Matérias</h2>
-                <div id="materias" class="space-y-2"></div>
+                <div id="materias"></div>
             </div>
 
-            <div id="favoritos-container" class="w-full lg:w-3/5 xl:w-1/3 space-y-2">
+            <div id="favoritos-container" class="w-full lg:w-3/5 xl:w-1/3 space-y-2 min-h-[200px]">
                 <h2 class="text-lg font-semibold text-zinc-600 dark:text-zinc-300 mb-2">Matérias Favoritas</h2>
-                <div id="favoritas" class="space-y-2"></div>
+                <div id="favoritas"></div>
             </div>
         </div>
     </div>
@@ -117,7 +120,7 @@
             class="max-w-screen-3xl mx-auto flex flex-col sm:flex-row justify-between items-center text-sm text-zinc-600 dark:text-zinc-400">
             <div class="mb-2 sm:mb-0">&reg; Todos os direitos reservados.</div>
             <div class="flex flex-col items-end">
-                <div class="text-xs mb-1">v0.2.12</div>
+                <div class="text-xs mb-1">v0.3.0</div>
                 <div>Desenvolvido por: <a href="https://giordani.dev" target="_blank"
                         class="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">Giordani.dev</a>
                 </div>

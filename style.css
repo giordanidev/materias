@@ -55,3 +55,24 @@
     right: 0;
     width: auto;
 }
+
+/* --- NOVOS ESTILOS PARA O BOTÃO DE LIMPAR PESQUISA --- */
+
+/* Estado ativo (quando há texto na pesquisa) */
+#btn-limpar-pesquisa[data-active="true"] {
+    color: #ef4444; /* text-red-500 */
+}
+
+/* Hover do estado ativo */
+#btn-limpar-pesquisa[data-active="true"]:hover {
+    background-color: #ef4444; /* bg-red-500 */
+    color: #ffffff; /* text-white */
+}
+
+/* As classes abaixo podem ser removidas pois foram substituídas por classes do Tailwind */
+/* 
+#btn-limpar-pesquisa.active { ... }
+.materias-dia-container { ... }
+.dark .materias-dia-container { ... }
+.materia-action-button { ... }
+*/
