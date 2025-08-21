@@ -3,13 +3,18 @@
  **************************************/
 function adicionarMateria() {
     const input = document.getElementById('nova-materia');
-    const texto = input.value.trim().replace(/\s+/g, ' ');
-    const isFavorita = document.getElementById('nova-favorita').checked;
+    let texto = input.value.trim().replace(/\s+/g, ' ');
+    texto = texto.replace(/"/g, "'"); // Substitui " por '
 
     if (!texto) return;
 
-    if (materiaJaExiste(texto)) {
-        mostrarAlerta('Esta matéria já existe nas listas!', 'bg-yellow-500');
+    // Verifica se já existe em qualquer lista
+    const existeEmMaterias = materias.some(m => m.texto === texto);
+    const existeEmFavoritas = favoritas.some(f => f.texto === texto);
+
+    if (existeEmMaterias || existeEmFavoritas) {
+        mostrarAlerta('Matéria já existe! Texto corrigido e copiado.', 'bg-yellow-500');
+        copiarMateria(texto);
         input.value = '';
         return;
     }
