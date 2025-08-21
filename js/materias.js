@@ -160,11 +160,11 @@ function criarItemMateria(mat, originalIndex) {
                 <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100 break-words">${mat.texto}</span>
             </div>
             <button onclick="event.stopPropagation(); moverParaFavoritas(${originalIndex})" title="Mover para favoritas"
-                class="bg-transparent text-yellow-500 hover:bg-zinc-300 dark:hover:bg-zinc-700 font-bold p-2 w-8 h-8 rounded text-sm transition-colors">
+                class="bg-transparent text-zinc-300 hover:text-yellow-500 dark:text-zinc-500 dark:hover:text-yellow-500 font-bold p-2 w-8 h-8 rounded text-sm transition-colors">
                 <i class="fas fa-star"></i>
             </button>
             <button onclick="event.stopPropagation(); apagarMateria(${originalIndex})" title="Apagar matéria"
-                class="bg-transparent text-red-500 hover:bg-zinc-300 dark:hover:bg-zinc-700 font-bold p-2 w-8 h-8 rounded text-sm transition-colors">
+                class="bg-transparent text-zinc-300 hover:text-red-500 dark:text-zinc-500 dark:hover:text-red-500 font-bold p-2 w-8 h-8 rounded text-sm transition-colors">
                 <i class="fas fa-trash"></i>
             </button>
         </div>
@@ -245,15 +245,22 @@ document.addEventListener('DOMContentLoaded', () => {
     if (pesquisaInput && btnLimparPesquisa) {
         pesquisaInput.addEventListener('input', () => {
             const hasText = pesquisaInput.value.trim() !== '';
-            // Apenas alterna o atributo 'data-active'
             btnLimparPesquisa.dataset.active = hasText;
         });
 
         btnLimparPesquisa.addEventListener('click', () => {
             pesquisaInput.value = '';
-            // Dispara o evento 'input' para resetar o estilo do botão
             pesquisaInput.dispatchEvent(new Event('input'));
             filtrarMaterias();
+        });
+
+        // Zera o campo ao pressionar Enter
+        pesquisaInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                pesquisaInput.value = '';
+                pesquisaInput.dispatchEvent(new Event('input'));
+                filtrarMaterias();
+            }
         });
     }
 });
