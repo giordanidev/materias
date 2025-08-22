@@ -123,6 +123,32 @@ function materiaJaExiste(texto, ignorarMateria = null) {
     return existeEmMaterias || existeEmFavoritas;
 }
 
+function removerAcentos(str) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function destacarTermo(texto, termo) {
+    if (!termo) return texto;
+    const termoSemAcento = removerAcentos(termo);
+    const textoSemAcento = removerAcentos(texto);
+
+    // Regex global e case-insensitive
+    const regex = new RegExp(termoSemAcento, "gi");
+    let resultado = "";
+    let lastIndex = 0;
+    let match;
+
+    while ((match = regex.exec(textoSemAcento)) !== null) {
+        // Pega o índice real no texto original
+        const realIndex = [...textoSemAcento.slice(0, match.index)].length;
+        resultado += texto.slice(lastIndex, realIndex);
+        resultado += `<span class="bg-yellow-300 text-black rounded px-1">${texto.slice(realIndex, realIndex + termo.length)}</span>`;
+        lastIndex = realIndex + termo.length;
+    }
+    resultado += texto.slice(lastIndex);
+    return resultado;
+}
+
 /**************************************
  * INICIALIZAÇÃO                      *
  **************************************/
@@ -158,6 +184,17 @@ document.addEventListener('DOMContentLoaded', () => {
     atualizarSeletorDatas();
     exibirMaterias();
     exibirFavoritas();
+
+    // Fechar modal ao clicar fora do conteúdo
+    const modalAjuda = document.getElementById('modal-ajuda');
+    if (modalAjuda) {
+        modalAjuda.addEventListener('click', function(e) {
+            // Fecha apenas se clicar no fundo (não na caixa de conteúdo)
+            if (e.target === modalAjuda) {
+                fecharModalAjuda();
+            }
+        });
+    }
 });
 
 function resetarCheckboxFavorito() {
@@ -166,3 +203,17 @@ function resetarCheckboxFavorito() {
     checkboxDiv.classList.remove('bg-yellow-500', 'dark:bg-yellow-600');
     checkboxDiv.querySelector('i').classList.remove('text-white');
 }
+
+function abrirModalAjuda() {
+    document.getElementById('modal-ajuda').classList.remove('hidden');
+}
+function fecharModalAjuda() {
+    document.getElementById('modal-ajuda').classList.add('hidden');
+}
+
+document.addEventListener('keydown', function(e) {
+    const modal = document.getElementById('modal-ajuda');
+    if (modal && !modal.classList.contains('hidden') && e.key === 'Escape') {
+        fecharModalAjuda();
+    }
+});

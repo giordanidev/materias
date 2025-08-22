@@ -88,16 +88,16 @@ function atualizarSeletorDatas() {
 }
 
 function filtrarMaterias() {
-    const termo = document.getElementById('pesquisa').value.trim().toLowerCase();
+    const termo = document.getElementById('pesquisa').value.trim();
+    const termoSemAcento = removerAcentos(termo).toLowerCase();
 
     if (termo) {
-        const materiasFiltradas = materias.filter(m => m.texto.toLowerCase().includes(termo));
-        const favoritasFiltradas = favoritas.filter(f => f.texto.toLowerCase().includes(termo));
+        const materiasFiltradas = materias.filter(m => removerAcentos(m.texto).toLowerCase().includes(termoSemAcento));
+        const favoritasFiltradas = favoritas.filter(f => removerAcentos(f.texto).toLowerCase().includes(termoSemAcento));
         
         exibirMaterias(materiasFiltradas);
         exibirFavoritas(favoritasFiltradas);
     } else {
-        // Quando não há termo, exibe tudo normalmente
         exibirMaterias();
         exibirFavoritas();
     }
@@ -139,6 +139,8 @@ function exibirMaterias(materiasParaExibir = null) {
         return acc;
     }, {});
 
+    const termoPesquisa = document.getElementById('pesquisa').value.trim();
+
     divMaterias.innerHTML = Object.keys(materiasPorData)
         .sort().reverse()
         .map(data => `
@@ -151,7 +153,7 @@ function exibirMaterias(materiasParaExibir = null) {
                     .sort((a, b) => b.timestamp - a.timestamp)
                     .map((mat) => {
                         const originalIndex = materias.findIndex(m => m.timestamp === mat.timestamp);
-                        return criarItemMateria(mat, originalIndex);
+                        return criarItemMateria(mat, originalIndex, termoPesquisa);
                     })
                     .join('')}
                 </div>
@@ -159,12 +161,15 @@ function exibirMaterias(materiasParaExibir = null) {
         `).join('');
 }
 
-function criarItemMateria(mat, originalIndex) {
+function criarItemMateria(mat, originalIndex, termoPesquisa = "") {
+    const textoExibido = termoPesquisa
+        ? destacarTermo(mat.texto, termoPesquisa)
+        : mat.texto;
     return `
         <div class="flex items-center gap-2">
             <div onclick="copiarMateria('${mat.texto.replace(/'/g, "\\'")}', 0, this)" data-timestamp="${mat.timestamp}"
                 class="flex-grow py-1 px-2 rounded-lg cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-all active:bg-zinc-400 dark:active:bg-zinc-500 min-w-0">
-                <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100 break-words">${mat.texto}</span>
+                <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100 break-words">${textoExibido}</span>
             </div>
             <button onclick="event.stopPropagation(); moverParaFavoritas(${originalIndex})" title="Mover para favoritas"
                 class="bg-transparent text-zinc-300 hover:text-yellow-500 dark:text-zinc-500 dark:hover:text-yellow-500 font-bold p-2 w-8 h-8 rounded text-sm transition-colors">

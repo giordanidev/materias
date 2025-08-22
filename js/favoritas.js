@@ -4,9 +4,9 @@
 function exibirFavoritas(favoritasParaExibir = null) {
     const divFavoritas = document.getElementById('favoritas');
     const favoritasExibidas = favoritasParaExibir || favoritas;
+    const termoPesquisa = document.getElementById('pesquisa').value.trim();
 
     if (favoritasExibidas.length === 0) {
-        const termoPesquisa = document.getElementById('pesquisa').value.trim();
         if (termoPesquisa) {
             divFavoritas.innerHTML = '<div class="text-center py-2 text-zinc-500 dark:text-zinc-400">Nenhuma favorita encontrada na pesquisa</div>';
         } else {
@@ -19,11 +19,14 @@ function exibirFavoritas(favoritasParaExibir = null) {
         .sort((a, b) => b.timestamp - a.timestamp)
         .map(mat => {
             const originalIndex = favoritas.findIndex(fav => fav.timestamp === mat.timestamp);
+            const textoExibido = termoPesquisa
+                ? destacarTermo(mat.texto, termoPesquisa)
+                : mat.texto;
             return `
             <div class="flex items-center gap-2">
                 <div onclick="copiarMateria('${mat.texto.replace(/'/g, "\\'")}', 0, this)" data-timestamp="${mat.timestamp}"
                     class="flex-grow py-1 px-2 rounded-lg cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-all active:bg-zinc-400 dark:active:bg-zinc-500 min-w-0">
-                    <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100 break-words">${mat.texto}</span>
+                    <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100 break-words">${textoExibido}</span>
                 </div>
                 <button onclick="moverParaMateriasNormais(${originalIndex})" class="bg-transparent text-zinc-300 dark:text-zinc-500 hover:text-blue-500 dark:hover:text-blue-500 font-bold p-2 w-8 h-8 rounded text-sm transition-colors" title="Mover para Matérias">
                     <i class="fas fa-arrow-left"></i>
