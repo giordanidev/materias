@@ -19,6 +19,8 @@ function adicionarMateria() {
         return;
     }
 
+    const isFavorita = document.getElementById('nova-favorita').checked;
+
     const timestamp = new Date().getTime();
     const novaMateria = {
         texto,
