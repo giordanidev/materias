@@ -76,3 +76,13 @@
 .dark .materias-dia-container { ... }
 .materia-action-button { ... }
 */
+
+/* Oculta a barra de rolagem em navegadores modernos */
+body {
+    overflow-y: scroll;
+    scrollbar-width: none; /* Firefox */
+}
+
+body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
