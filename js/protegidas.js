@@ -99,9 +99,9 @@ function exibirProtegidas(lista, termoPesquisa = "") {
                 : msg.texto;
             const podeApagar = (Date.now() - new Date(msg.data).getTime()) < 600000; // 10 min
             return `
-            <div class="flex items-center gap-2">
+            <div class="flex items-center">
                 <div onclick="copiarMateria('${msg.texto.replace(/'/g, "\\'")}', 0, this)" data-timestamp="${msg._id}"
-                    class="flex-grow py-1 px-2 rounded-lg cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-all active:bg-zinc-400 dark:active:bg-zinc-500 min-w-0">
+                    class="flex-grow py-1 px-2 rounded-lg cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-all active:bg-zinc-400 dark:active:bg-zinc-500">
                     <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100 break-words">${textoExibido}</span>
                 </div>
                 ${podeApagar
