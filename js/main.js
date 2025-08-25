@@ -217,3 +217,32 @@ document.addEventListener('keydown', function(e) {
         fecharModalAjuda();
     }
 });
+
+function exclusivoFavoritaProtegida(tipo) {
+    const favorita = document.getElementById('nova-favorita');
+    const protegida = document.getElementById('nova-protegida');
+    const favoritaDiv = favorita.nextElementSibling;
+    const protegidaDiv = protegida.nextElementSibling;
+
+    if (tipo === 'favorita' && favorita.checked) {
+        protegida.checked = false;
+        // Reset visual protegida
+        protegidaDiv.classList.remove('bg-blue-500', 'text-white');
+        protegidaDiv.classList.add('bg-zinc-300', 'dark:bg-zinc-700', 'text-white');
+    }
+    if (tipo === 'protegida' && protegida.checked) {
+        favorita.checked = false;
+        // Reset visual favorita
+        favoritaDiv.classList.remove('bg-yellow-500', 'text-white');
+        favoritaDiv.classList.add('bg-zinc-300', 'dark:bg-zinc-700', 'text-white');
+    }
+}
+
+let debounceProtegidasTimeout;
+
+function pesquisarProtegidasDebounce(termoSemAcento, termoOriginal) {
+    clearTimeout(debounceProtegidasTimeout);
+    debounceProtegidasTimeout = setTimeout(() => {
+        filtrarProtegidas(termoSemAcento, termoOriginal);
+    }, 400); // 400ms de atraso, ajuste conforme necessário
+}

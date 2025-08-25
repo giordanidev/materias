@@ -1,12 +1,41 @@
 /**************************************
  * FUNÇÕES PARA MATÉRIAS PADRÃO       *
  **************************************/
-function adicionarMateria() {
+async function adicionarMateria() {
     const input = document.getElementById('nova-materia');
     let texto = input.value.trim().replace(/\s+/g, ' ');
-    texto = texto.replace(/"/g, "'"); // Substitui " por '
+    texto = texto.replace(/"/g, "'");
 
     if (!texto) return;
+
+    const isFavorita = document.getElementById('nova-favorita').checked;
+    const isProtegida = document.getElementById('nova-protegida').checked;
+
+    if (isProtegida) {
+        // Adiciona diretamente à lista protegida via API
+        await fetch('https://materias-protegidas.onrender.com/api/mensagens-protegidas', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ texto, origem: 'manual' })
+        });
+        mostrarAlerta('Matéria protegida adicionada!', 'bg-blue-500');
+        input.value = '';
+        document.getElementById('nova-protegida').checked = false;
+        document.getElementById('nova-favorita').checked = false;
+        resetarCheckboxFavorito();
+        carregarProtegidas();
+        return;
+    }
+
+    if (isFavorita) {
+        // Adicionar à lista de favoritas normalmente
+        // ... seu código de favoritas ...
+        input.value = '';
+        document.getElementById('nova-favorita').checked = false;
+        document.getElementById('nova-protegida').checked = false;
+        resetarCheckboxFavorito();
+        return;
+    }
 
     // Verifica se já existe em qualquer lista
     const existeEmMaterias = materias.some(m => m.texto === texto);
@@ -18,8 +47,6 @@ function adicionarMateria() {
         input.value = '';
         return;
     }
-
-    const isFavorita = document.getElementById('nova-favorita').checked;
 
     const timestamp = new Date().getTime();
     const novaMateria = {
@@ -100,6 +127,8 @@ function filtrarMaterias() {
     } else {
         exibirMaterias();
         exibirFavoritas();
+
+        carregarProtegidas(false);
     }
 }
 
@@ -175,6 +204,10 @@ function criarItemMateria(mat, originalIndex, termoPesquisa = "") {
                 class="bg-transparent text-zinc-300 hover:text-yellow-500 dark:text-zinc-500 dark:hover:text-yellow-500 font-bold p-2 w-8 h-8 rounded text-sm transition-colors">
                 <i class="fas fa-star"></i>
             </button>
+            <button onclick="event.stopPropagation(); moverParaProtegidas(${originalIndex})" title="Mover para protegidas"
+                class="bg-transparent text-zinc-300 hover:text-blue-500 dark:text-zinc-5000 dark:hover:text-blue-600 font-bold p-2 w-8 h-8 rounded text-sm transition-colors">
+                <i class="fas fa-shield-alt"></i>
+            </button>
             <button onclick="event.stopPropagation(); apagarMateria(${originalIndex})" title="Apagar matéria"
                 class="bg-transparent text-zinc-300 hover:text-red-500 dark:text-zinc-500 dark:hover:text-red-500 font-bold p-2 w-8 h-8 rounded text-sm transition-colors">
                 <i class="fas fa-trash"></i>
@@ -246,6 +279,21 @@ function moverParaFavoritas(index) {
     }
 }
 
+async function moverParaProtegidas(index) {
+    const mat = materias[index];
+    if (!mat) return;
+    await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ texto: mat.texto, origem: 'realocada' })
+    });
+    mostrarAlerta('Matéria movida para protegidas!', 'bg-blue-500');
+    carregarProtegidas();
+    materias.splice(index, 1);
+    salvarDados();
+    exibirMaterias();
+}
+
 document.getElementById('selecionar-data').addEventListener('change', () => {
     exibirMaterias();
 });
@@ -256,8 +304,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (pesquisaInput && btnLimparPesquisa) {
         pesquisaInput.addEventListener('input', () => {
-            const hasText = pesquisaInput.value.trim() !== '';
-            btnLimparPesquisa.dataset.active = hasText;
+            const termo = pesquisaInput.value.trim();
+            const termoSemAcento = removerAcentos(termo).toLowerCase();
+            filtrarMaterias(); // normais e favoritas
+            pesquisarProtegidasDebounce(termoSemAcento, termo);
         });
 
         btnLimparPesquisa.addEventListener('click', () => {
