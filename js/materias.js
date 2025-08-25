@@ -12,18 +12,12 @@ async function adicionarMateria() {
     const isProtegida = document.getElementById('nova-protegida').checked;
 
     if (isProtegida) {
-        // Adiciona diretamente à lista protegida via API
-        await fetch('https://materias-protegidas.onrender.com/api/mensagens-protegidas', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ texto, origem: 'manual' })
-        });
-        mostrarAlerta('Matéria protegida adicionada!', 'bg-blue-500');
+        const adicionada = await adicionarMateriaProtegida(texto, 'manual');
         input.value = '';
         document.getElementById('nova-protegida').checked = false;
         document.getElementById('nova-favorita').checked = false;
         resetarCheckboxFavorito();
-        carregarProtegidas();
+        // Só retorna se foi adicionada ou já existia
         return;
     }
 
@@ -59,6 +53,7 @@ async function adicionarMateria() {
         favoritas.unshift(novaMateria);
         mostrarAlerta('Matéria favorita adicionada!', 'bg-yellow-500');
     } else {
+        // Adiciona à lista normal
         materias.unshift(novaMateria);
         mostrarAlerta('Matéria adicionada!');
     }
@@ -73,6 +68,23 @@ async function adicionarMateria() {
     atualizarSeletorDatas();
     exibirMaterias();
     exibirFavoritas();
+
+    // Verifica se existe em protegidas e remove da lista normal se necessário
+    try {
+        const res = await fetch('https://materias-protegidas.onrender.com/api/mensagens-protegidas?limit=1000');
+        const data = await res.json();
+        const listaProtegidas = Array.isArray(data.mensagens) ? data.mensagens : Array.isArray(data) ? data : [];
+        const existeProtegida = listaProtegidas.some(msg => msg.texto.trim().toLowerCase() === texto.trim().toLowerCase());
+        if (existeProtegida) {
+            // Remove da lista normal
+            materias = materias.filter(m => m.texto.trim().toLowerCase() !== texto.trim().toLowerCase());
+            salvarDados();
+            exibirMaterias();
+            mostrarAlerta('Matéria já existe em protegidas. Mantida apenas na lista protegida.', 'bg-blue-500');
+        }
+    } catch (err) {
+        // Silencioso, não impede fluxo
+    }
 
     // Copia e anima o elemento recém-adicionado
     requestAnimationFrame(() => {
@@ -201,15 +213,15 @@ function criarItemMateria(mat, originalIndex, termoPesquisa = "") {
                 <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100 break-words">${textoExibido}</span>
             </div>
             <button onclick="event.stopPropagation(); moverParaFavoritas(${originalIndex})" title="Mover para favoritas"
-                class="bg-transparent text-zinc-300 hover:text-yellow-500 dark:text-zinc-500 dark:hover:text-yellow-500 font-bold p-2 w-8 h-8 rounded text-sm transition-colors">
+                class="bg-transparent text-zinc-300 hover:text-yellow-500 dark:text-zinc-500 dark:hover:text-yellow-500 font-bold p-2 w-8 min-w-8 h-8 rounded text-sm transition-colors">
                 <i class="fas fa-star"></i>
             </button>
             <button onclick="event.stopPropagation(); moverParaProtegidas(${originalIndex})" title="Mover para protegidas"
-                class="bg-transparent text-zinc-300 hover:text-blue-500 dark:text-zinc-5000 dark:hover:text-blue-600 font-bold p-2 w-8 h-8 rounded text-sm transition-colors">
+                class="bg-transparent text-zinc-300 hover:text-blue-500 dark:text-zinc-5000 dark:hover:text-blue-600 font-bold p-2 w-8 min-w-8 h-8 rounded text-sm transition-colors">
                 <i class="fas fa-shield-alt"></i>
             </button>
             <button onclick="event.stopPropagation(); apagarMateria(${originalIndex})" title="Apagar matéria"
-                class="bg-transparent text-zinc-300 hover:text-red-500 dark:text-zinc-500 dark:hover:text-red-500 font-bold p-2 w-8 h-8 rounded text-sm transition-colors">
+                class="bg-transparent text-zinc-300 hover:text-red-500 dark:text-zinc-500 dark:hover:text-red-500 font-bold p-2 w-8 min-w-8 h-8 rounded text-sm transition-colors">
                 <i class="fas fa-trash"></i>
             </button>
         </div>
@@ -282,16 +294,16 @@ function moverParaFavoritas(index) {
 async function moverParaProtegidas(index) {
     const mat = materias[index];
     if (!mat) return;
-    await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ texto: mat.texto, origem: 'realocada' })
-    });
-    mostrarAlerta('Matéria movida para protegidas!', 'bg-blue-500');
-    carregarProtegidas();
-    materias.splice(index, 1);
-    salvarDados();
-    exibirMaterias();
+    // Usa a função que verifica duplicidade
+    const adicionada = await adicionarMateriaProtegida(mat.texto, 'realocada');
+    if (adicionada) {
+        mostrarAlerta('Matéria movida para protegidas!', 'bg-blue-500');
+        materias.splice(index, 1);
+        salvarDados();
+        exibirMaterias();
+    } else {
+        mostrarAlerta('Matéria já existe em protegidas!', 'bg-yellow-500');
+    }
 }
 
 document.getElementById('selecionar-data').addEventListener('change', () => {

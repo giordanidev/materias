@@ -233,7 +233,7 @@ function exclusivoFavoritaProtegida(tipo) {
     if (tipo === 'protegida' && protegida.checked) {
         favorita.checked = false;
         // Reset visual favorita
-        favoritaDiv.classList.remove('bg-yellow-500', 'text-white');
+        favoritaDiv.classList.remove('bg-yellow-500', 'dark:bg-yellow-600', 'text-white');
         favoritaDiv.classList.add('bg-zinc-300', 'dark:bg-zinc-700', 'text-white');
     }
 }

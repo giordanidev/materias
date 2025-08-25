@@ -22,13 +22,13 @@ async function carregarProtegidas(mostrarMensagem = false, pagina = 1) {
     try {
         const res = await fetch(`${API_URL}?page=${pagina}&limit=15`);
         const data = await res.json();
-        console.log('Protegidas:', data);
+        //console.log('Protegidas:', data);
         const lista = Array.isArray(data.mensagens) ? data.mensagens
             : Array.isArray(data) ? data
             : [];
         paginaAtualProtegidas = data.page || 1;
         totalPaginasProtegidas = data.totalPages || 1;
-        console.log('Página:', paginaAtualProtegidas, 'Total páginas:', totalPaginasProtegidas, 'Itens:', lista.length);
+        //console.log('Página:', paginaAtualProtegidas, 'Total páginas:', totalPaginasProtegidas, 'Itens:', lista.length);
 
         exibirProtegidas(lista);
         exibirPaginacaoProtegidas();
@@ -105,8 +105,8 @@ function exibirProtegidas(lista, termoPesquisa = "") {
                     <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100 break-words">${textoExibido}</span>
                 </div>
                 ${podeApagar
-                    ? `<button onclick="apagarProtegida('${msg._id}')" class="bg-transparent text-zinc-300 hover:text-red-500 dark:text-zinc-500 dark:hover:text-red-500 font-bold p-2 w-8 h-8 rounded text-sm transition-colors" title="Apagar"><i class="fas fa-trash"></i></button>`
-                    : `<button onclick="apagarProtegida('${msg._id}', true)" class="bg-transparent text-zinc-300 hover:text-red-500 dark:text-zinc-500 dark:hover:text-red-500 font-bold p-2 w-8 h-8 rounded text-sm transition-colors" title="Apagar com chave"><i class="fas fa-lock"></i></button>`
+                    ? `<button onclick="apagarProtegida('${msg._id}')" class="bg-transparent text-zinc-300 hover:text-red-500 dark:text-zinc-500 dark:hover:text-red-500 font-bold p-2 w-8 min-w-8 h-8 rounded text-sm transition-colors" title="Apagar"><i class="fas fa-trash"></i></button>`
+                    : `<button onclick="apagarProtegida('${msg._id}', true)" class="bg-transparent text-zinc-300 hover:text-red-500 dark:text-zinc-500 dark:hover:text-red-500 font-bold p-2 w-8 min-w-8 h-8 rounded text-sm transition-colors" title="Apagar com chave"><i class="fas fa-lock"></i></button>`
                 }
             </div>
             `;
@@ -191,6 +191,32 @@ function exibirPaginacaoProtegidas() {
         html += `</div>`;
     }
     div.innerHTML = html;
+}
+
+/**
+ * Adiciona uma nova matéria protegida.
+ * @param {string} texto
+ * @param {string} origem
+ */
+async function adicionarMateriaProtegida(texto, origem = 'manual') {
+    // Busca todas as protegidas para verificar duplicidade
+    const res = await fetch(`${API_URL}?limit=1000`);
+    const data = await res.json();
+    const lista = Array.isArray(data.mensagens) ? data.mensagens : Array.isArray(data) ? data : [];
+    const jaExiste = lista.some(msg => msg.texto.trim().toLowerCase() === texto.trim().toLowerCase());
+    if (jaExiste) {
+        mostrarAlerta('Matéria já existe em protegidas!', 'bg-yellow-500');
+        return false;
+    }
+    // Adiciona se não existir
+    await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ texto, origem })
+    });
+    mostrarAlerta('Matéria protegida adicionada!', 'bg-blue-500');
+    carregarProtegidas(false);
+    return true;
 }
 
 // Atualiza a lista protegida ao carregar e a cada 30 segundos

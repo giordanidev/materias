@@ -28,10 +28,10 @@ function exibirFavoritas(favoritasParaExibir = null) {
                     class="flex-grow py-1 px-2 rounded-lg cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-all active:bg-zinc-400 dark:active:bg-zinc-500 min-w-0">
                     <span class="text-sm sm:text-base text-zinc-600 dark:text-zinc-100 break-words">${textoExibido}</span>
                 </div>
-                <button onclick="moverParaMateriasNormais(${originalIndex})" class="bg-transparent text-zinc-300 dark:text-zinc-500 hover:text-blue-500 dark:hover:text-blue-500 font-bold p-2 w-8 h-8 rounded text-sm transition-colors" title="Mover para Matérias">
+                <button onclick="moverParaMateriasNormais(${originalIndex})" class="bg-transparent text-zinc-300 dark:text-zinc-500 hover:text-blue-500 dark:hover:text-blue-500 font-bold p-2 w-8 min-w-8 h-8 rounded text-sm transition-colors" title="Mover para Matérias">
                     <i class="fas fa-arrow-left"></i>
                 </button>
-                <button onclick="removerFavorita(${originalIndex})" class="bg-transparent text-zinc-300 dark:text-zinc-500 hover:text-red-500 dark:hover:text-red-500 font-bold p-2 w-8 h-8 rounded text-sm transition-colors" title="Remover Favorita">
+                <button onclick="removerFavorita(${originalIndex})" class="bg-transparent text-zinc-300 dark:text-zinc-500 hover:text-red-500 dark:hover:text-red-500 font-bold p-2 w-8 min-w-8 h-8 rounded text-sm transition-colors" title="Remover Favorita">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
