@@ -17,17 +17,35 @@ async function adicionarMateria() {
         document.getElementById('nova-protegida').checked = false;
         document.getElementById('nova-favorita').checked = false;
         resetarCheckboxFavorito();
-        // Só retorna se foi adicionada ou já existia
         return;
     }
 
     if (isFavorita) {
-        // Adicionar à lista de favoritas normalmente
-        // ... seu código de favoritas ...
+        // Verifica se já existe nas favoritas
+        const existeEmFavoritas = favoritas.some(f => f.texto.trim().toLowerCase() === texto.trim().toLowerCase());
+        if (existeEmFavoritas) {
+            mostrarAlerta('Matéria já existe nas favoritas!', 'bg-yellow-500');
+            copiarMateria(texto);
+            input.value = '';
+            document.getElementById('nova-favorita').checked = false;
+            resetarCheckboxFavorito();
+            return;
+        }
+        const timestamp = new Date().getTime();
+        const novaMateria = {
+            texto,
+            data: obterDataAtual(),
+            timestamp: timestamp
+        };
+        favoritas.unshift(novaMateria);
+        mostrarAlerta('Matéria favorita adicionada!', 'bg-yellow-500');
         input.value = '';
         document.getElementById('nova-favorita').checked = false;
-        document.getElementById('nova-protegida').checked = false;
         resetarCheckboxFavorito();
+        salvarDados();
+        atualizarSeletorDatas();
+        exibirMaterias();
+        exibirFavoritas();
         return;
     }
 
